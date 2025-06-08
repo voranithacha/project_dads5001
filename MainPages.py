@@ -95,10 +95,10 @@ else:
             return "อื่น ๆ"
 
     # สร้างคอลัมน์ label
-    video_counts['label'] = video_counts['video_title'].apply(generate_label)
+    video_counts['Model'] = video_counts['video_title'].apply(generate_label)
 
     # เรียงคอลัมน์ใหม่
-    result_df = video_counts[['label', 'video_title', 'count']]
+    result_df = video_counts[['Model', 'video_title', 'count']]
 
     # แสดงผล
     st.subheader("📊 Video Comment Counts")

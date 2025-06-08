@@ -36,9 +36,8 @@ with col3:
 # === Sidebar: Conversation History ===
 
 # === MongoDB ===
-
 mongo_uri = "mongodb+srv://readwrite:OSbtDM3XE8nP2JqT@voranitha.z6voe4w.mongodb.net/"
-
+ 
 @st.cache_resource
 def get_database():
     """
@@ -48,7 +47,6 @@ def get_database():
     try:
         client = MongoClient(mongo_uri)
         client.admin.command('ping') # ทดสอบการเชื่อมต่อ
-        st.success("เชื่อมต่อกับ MongoDB Atlas สำเร็จ!")
         return client.car # คืน database 'car'
     except ConnectionFailure as e:
         st.error(f"ไม่สามารถเชื่อมต่อกับ MongoDB ได้: {e}")
@@ -59,25 +57,22 @@ def get_database():
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดที่ไม่คาดคิด: {e}")
         st.stop()
-
+ 
 # --- เริ่มต้น Streamlit App ---
-st.set_page_config(page_title="MongoDB Comment Explorer", layout="wide")
-st.title("💡 MongoDB Comment Explorer with Streamlit")
-
+ 
 # ดึง database object
 db = get_database()
-comments_collection = db.comment
-
-st.write(f"กำลังทำงานกับ Database: **`{db.name}`** และ Collection: **`{comments_collection.name}`**")
+collection = db.comment
+data = list(collection.find())  # Get all documents as a list of dicts
+df = pd.DataFrame(data)         # Convert to DataFrame
 
 # ดึงข้อมูลเฉพาะ video_title
-comments = list(collection.find({"video_title": {"$exists": True}}, {"_id": 0, "video_title": 1}))
-#comments = list(comments_collection.find({}, {"video_title": 1}))
-#comments = list(comments_collection.find({}, {"_id": 0, "video_title": 1}))
+#comments = list(collection.find({}, {"video_title": 1}))
+#comments = list(collection.find({}, {"_id": 0, "video_title": 1}))
 
 # แปลงเป็น DataFrame
-df = pd.DataFrame(comments)
-st.write(comments[:5]) 
+#df = pd.DataFrame(comments)
+#st.write(comments[:5]) 
 
 # ตรวจสอบคอลัมน์
 if 'video_title' not in df.columns:

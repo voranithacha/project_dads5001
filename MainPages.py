@@ -36,14 +36,15 @@ with col3:
 # === Sidebar: Conversation History ===
 
 # === MongoDB ===
+
 # Connect to MongoDB Atlas
 client = MongoClient("mongodb+srv://readwrite:OSbtDM3XE8nP2JqT@voranitha.z6voe4w.mongodb.net/")
 db = client["car"]
-collection = db["comments"]  
+collection = db["comments_collection"]  
 
 # ดึงข้อมูลเฉพาะ video_title
-#comments = list(collection.find({}, {"video_title": 1}))
-comments = list(collection.find({}, {"_id": 0, "video_title": 1}))
+comments = list(collection.find({}, {"video_title": 1}))
+#comments = list(collection.find({}, {"_id": 0, "video_title": 1}))
 
 # แปลงเป็น DataFrame
 df = pd.DataFrame(comments)

@@ -3,7 +3,7 @@ import streamlit as st
 st.title("🧠 Comment Classification")
 
 # --- Sub-topic Navigation ---
-option = st.radio("เลือกหัวข้อย่อย", ["🔍 Preview Comments", "🧪 ML Modeling", "📈 Result Visualization"])
+option = st.radio("เลือกหัวข้อย่อย", ["🔍 Preview Comments", "🧪 ML Modeling"])
 
 # --- Section 1 ---
 if option == "🔍 Preview Comments":

@@ -80,7 +80,7 @@ if 'video_title' not in df.columns:
 else:
     # นับจำนวนความคิดเห็นต่อ video_title
     video_counts = df['video_title'].value_counts().reset_index()
-    video_counts.columns = ['video_title', 'count']
+    video_counts.columns = ['video_title', 'count_comments']
 
     # ฟังก์ชันสร้าง label อัตโนมัติ
     def generate_label(title):
@@ -98,7 +98,7 @@ else:
     video_counts['Model'] = video_counts['video_title'].apply(generate_label)
 
     # เรียงคอลัมน์ใหม่
-    result_df = video_counts[['Model', 'video_title', 'count']]
+    result_df = video_counts[['Model', 'video_title', 'count_comments']]
 
     # แสดงผล
     st.subheader("📊 Video Comment Counts")

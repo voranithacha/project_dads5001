@@ -46,8 +46,7 @@ comments = list(collection.find({}, {"video_title": 1}))
 
 # แปลงเป็น DataFrame
 df = pd.DataFrame(comments)
-#st.subheader("Top 5 Records from comments")
-#st.write(df[:5])
+st.write(comments[:5]) 
 
 # ตรวจสอบคอลัมน์
 if 'video_title' not in df.columns:

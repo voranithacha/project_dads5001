@@ -130,7 +130,7 @@ model_keywords = {
     "BYD Dolphin": "DOLPHIN",
     "BYD Seal": "SEAL"
 }
-
+st.header("☁️ Word Cloud")
 # --- สร้าง Dropdown ให้ผู้ใช้เลือก Model ---
 selected_model = st.selectbox("เลือกรุ่นรถยนต์ที่ต้องการดู Word Cloud", list(model_keywords.keys()))
 

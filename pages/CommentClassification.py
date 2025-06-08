@@ -15,7 +15,7 @@ if option == "🔍 Preview Comments":
 elif option == "🧪 ML Modeling":
     st.subheader("🧪 สร้างโมเดล Machine Learning")
     # เลือก model (Random Forest, Neural Network, etc.)
-    model_type = st.selectbox("เลือกโมเดล", ["Naive Bayes", "SVM", "Random Forest"])
+    model_type = st.selectbox("เลือกโมเดล", ["Random Forest", "Neural Network"])
     st.write(f"คุณเลือกโมเดล: {model_type}")
 
 

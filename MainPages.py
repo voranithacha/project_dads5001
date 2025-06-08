@@ -36,41 +36,28 @@ with col3:
 # === Sidebar: Conversation History ===
 
 # === MongoDB ===
-# Connect to MongoDB
-client = MongoClient("mongodb://localhost:27017/")  # adjust if needed
-db = client["db_comment"]
-collection = db["comments"]
-# Load JSON data
-with open("D:\DADS5001 - Tools\data\comments_data.json", "r", encoding="utf-8") as f:
-    try:
-        data = json.load(f)  # for array format
-    except json.JSONDecodeError:
-        # fallback if JSON is in NDJSON format
-        data = [json.loads(line) for line in f]
+# Connect to MongoDB Atlas
+client = MongoClient("mongodb+srv://readwrite:OSbtDM3XE8nP2JqT@voranitha.z6voe4w.mongodb.net/")
+db = client["car"]
+collection = db["your_collection_name"]  # เปลี่ยนชื่อตาม collection ของคุณ
 
-collection.delete_many({})  #ลบก่อน insert
-
-# Insert into MongoDB
-if isinstance(data, list):
-    collection.insert_many(data)
-else:
-    collection.insert_one(data)
-
-# Query only video_title
+# ดึงข้อมูลเฉพาะ video_title
 comments = list(collection.find({}, {"video_title": 1}))
+
+# แปลงเป็น DataFrame
 df = pd.DataFrame(comments)
 
-# Check column
+# ตรวจสอบคอลัมน์
 if 'video_title' not in df.columns:
     st.error("ไม่พบคอลัมน์ 'video_title'")
 else:
-    # Count frequency of each title
+    # นับจำนวนความคิดเห็นต่อ video_title
     video_counts = df['video_title'].value_counts().reset_index()
     video_counts.columns = ['video_title', 'count']
 
-    # Create dynamic label based on keywords
+    # ฟังก์ชันสร้าง label อัตโนมัติ
     def generate_label(title):
-        title_upper = title.upper()  # ป้องกันตัวเล็กใหญ่
+        title_upper = title.upper()
         if "ATTO" in title_upper:
             return "BYD Atto3"
         elif "SEAL" in title_upper:
@@ -78,14 +65,14 @@ else:
         elif "DOLPHIN" in title_upper:
             return "BYD Dolphin"
         else:
-            return "อื่น ๆ"  # หรือจะ return title เองก็ได้
+            return "อื่น ๆ"
 
-    # Apply label
-    video_counts["label"] = video_counts["video_title"].apply(generate_label)
+    # สร้างคอลัมน์ label
+    video_counts['label'] = video_counts['video_title'].apply(generate_label)
 
-    # Reorder columns
-    result_df = video_counts[["label", "video_title", "count"]]
+    # เรียงคอลัมน์ใหม่
+    result_df = video_counts[['label', 'video_title', 'count']]
 
-    # Display
+    # แสดงผล
     st.subheader("📊 Video Comment Counts")
     st.dataframe(result_df)

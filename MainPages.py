@@ -3,6 +3,8 @@ from collections import Counter
 import pandas as pd
 from pymongo import MongoClient
 import json
+from wordcloud import WordCloud
+import matplotlib.pyplot as plt
 
 st.title("YouTube Comments Analysis")
 st.markdown("""
@@ -105,20 +107,26 @@ else:
     st.dataframe(result_df)
 
 # Word Cloud use MongoDB
-comments_cursor = collection.find({}, {"comment": 1})  # เอาเฉพาะฟิลด์ comment
-comments_list = [doc["comment"] for doc in comments_cursor if "comment" in doc]
-
-# รวมข้อความทั้งหมด
-all_text = " ".join(comments_list)
+# ดึงข้อความ
+cursor = collection.find({}, {"comment": 1})
+text_list = [doc["comment"] for doc in cursor if "comment" in doc]
+all_text = " ".join(text_list)
 
 # สร้าง WordCloud
-wordcloud = WordCloud(font_path='THSarabunNew.ttf',  # ใช้ฟอนต์ภาษาไทยถ้ามี
-                      background_color="white",
-                      width=800, height=400).generate(all_text)
+try:
+    wordcloud = WordCloud(
+        font_path="THSarabunNew.ttf",  # ลองลบบรรทัดนี้ถ้าไม่มีฟอนต์
+        background_color="white",
+        width=800,
+        height=400
+    ).generate(all_text)
 
-# แสดงผลใน Streamlit
-st.subheader("☁️ Word Cloud จากความคิดเห็น")
-fig, ax = plt.subplots(figsize=(10, 5))
-ax.imshow(wordcloud, interpolation='bilinear')
-ax.axis("off")
-st.pyplot(fig)
+    # แสดงผล
+    st.subheader("☁️ Word Cloud จากความคิดเห็น")
+    fig, ax = plt.subplots(figsize=(10, 5))
+    ax.imshow(wordcloud, interpolation="bilinear")
+    ax.axis("off")
+    st.pyplot(fig)
+
+except Exception as e:
+    st.error(f"เกิดข้อผิดพลาดในการสร้าง Word Cloud: {e}")

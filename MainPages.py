@@ -8,7 +8,8 @@ import json
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from pythainlp.tokenize import word_tokenize
-from pythainlp.corpus.common import thai_stopwords
+from pythainlp.corpus.common import thai_stopwords, common
+from pythainlp.util import Trie
 import re
 
 st.title("YouTube Comments Analysis")
@@ -113,6 +114,13 @@ else:
 
 # Word Cloud
 comments_collection = db.comment
+
+# --- สร้าง Custom Dictionary ---
+# โหลดพจนานุกรมมาตรฐานของ pythainlp
+default_words = common.thai_words()
+custom_word_list = list(default_words) + ["ไฟฟ้า", "รถยนต์ไฟฟ้า", "แบตเตอรี่", "ขับขี่","ซื้อ","เงิน","เสียง","อะไหล่","แจ้งเตือน","ชาร์จ","กล้อง","เทค","ออฟชั่น","สี","ข้างใน","หน้า","ดีไซน์"] 
+custom_dictionary = Trie(custom_word_list)
+# ----------------------------------
 
 # --- สร้าง Word Cloud ---
 # --- กำหนด Mapping ชื่อ Model กับ Keyword ใน title ---

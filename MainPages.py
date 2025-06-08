@@ -173,9 +173,7 @@ if selected_model: # ตรวจสอบแค่ว่ามีการเ�
             }
             
             # กรองคำ
-            filtered_tokens = [
-                w for w in tokens 
-                if w not in combined_stopwords and len(w) > 1 and w in allowed_words]
+            filtered_tokens = [w for w in tokens if w not in combined_stopwords and len(w) > 1 and w in allowed_words]
 
             # หากไม่มีคำที่ถูกกรองเลย ให้แจ้งเตือน
             if not filtered_tokens:

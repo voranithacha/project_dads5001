@@ -142,7 +142,7 @@ if selected_model and st.button("สร้าง Word Cloud"):
         # ตัดคำและกรอง Stopwords
         tokens = word_tokenize(full_text, engine="newmm")
         stopwords = set(thai_stopwords()).union({"ครับ", "ค่ะ", "ๆ", "นะ", "เลย"})
-        filtered = [w for w in tokens if w not in stopwords and len(w) > ๅ]
+        filtered = [w for w in tokens if w not in stopwords and len(w) > 1]
 
         # สร้าง Word Cloud
         wordcloud = WordCloud(

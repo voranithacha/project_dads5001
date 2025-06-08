@@ -103,3 +103,22 @@ else:
     # แสดงผล
     st.subheader("📊 Video Comment Counts")
     st.dataframe(result_df)
+
+# Word Cloud use MongoDB
+comments_cursor = collection.find({}, {"comment": 1})  # เอาเฉพาะฟิลด์ comment
+comments_list = [doc["comment"] for doc in comments_cursor if "comment" in doc]
+
+# รวมข้อความทั้งหมด
+all_text = " ".join(comments_list)
+
+# สร้าง WordCloud
+wordcloud = WordCloud(font_path='THSarabunNew.ttf',  # ใช้ฟอนต์ภาษาไทยถ้ามี
+                      background_color="white",
+                      width=800, height=400).generate(all_text)
+
+# แสดงผลใน Streamlit
+st.subheader("☁️ Word Cloud จากความคิดเห็น")
+fig, ax = plt.subplots(figsize=(10, 5))
+ax.imshow(wordcloud, interpolation='bilinear')
+ax.axis("off")
+st.pyplot(fig)

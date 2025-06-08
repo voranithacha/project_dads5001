@@ -106,27 +106,35 @@ else:
     st.subheader("📊 Video Comment Counts")
     st.dataframe(result_df)
 
-# Word Cloud use MongoDB
-# ดึงข้อความ
-cursor = collection.find({}, {"comment": 1})
-text_list = [doc["comment"] for doc in cursor if "comment" in doc]
-all_text = " ".join(text_list)
+# Word Cloud
+comments_collection = db.comment
 
-# สร้าง WordCloud
-try:
-    wordcloud = WordCloud(
-        font_path="THSarabunNew.ttf",  # ลองลบบรรทัดนี้ถ้าไม่มีฟอนต์
-        background_color="white",
-        width=800,
-        height=400
-    ).generate(all_text)
+# --- สร้าง Word Cloud ---
+st.header("☁️ Word Cloud จากคอมเมนต์")
 
-    # แสดงผล
-    st.subheader("☁️ Word Cloud จากความคิดเห็น")
-    fig, ax = plt.subplots(figsize=(10, 5))
-    ax.imshow(wordcloud, interpolation="bilinear")
-    ax.axis("off")
-    st.pyplot(fig)
+if st.button("สร้าง Word Cloud"):
+    try:
+        # ดึงคอมเมนต์ทั้งหมด
+        cursor = comments_collection.find({}, {"comment": 1})
+        comments = [doc.get("comment", "") for doc in cursor]
 
-except Exception as e:
-    st.error(f"เกิดข้อผิดพลาดในการสร้าง Word Cloud: {e}")
+        # รวมข้อความทั้งหมดเป็นชุดเดียว
+        text = " ".join(comments)
+
+        # สร้าง Word Cloud ด้วยฟอนต์ภาษาไทย
+        wordcloud = WordCloud(
+            font_path="fonts/THSarabunNew.ttf",  # ฟอนต์ที่อัปโหลดไว้
+            width=800,
+            height=400,
+            background_color="white"
+        ).generate(text)
+
+        # แสดงผลใน Streamlit
+        fig, ax = plt.subplots(figsize=(10, 5))
+        ax.imshow(wordcloud, interpolation='bilinear')
+        ax.axis("off")
+        st.pyplot(fig)
+
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดในการสร้าง Word Cloud: {e}")
+

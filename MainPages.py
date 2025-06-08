@@ -39,7 +39,7 @@ with col3:
 # Connect to MongoDB Atlas
 client = MongoClient("mongodb+srv://readwrite:OSbtDM3XE8nP2JqT@voranitha.z6voe4w.mongodb.net/")
 db = client["car"]
-collection = db["your_collection_name"]  # เปลี่ยนชื่อตาม collection ของคุณ
+collection = db["comments"]  
 
 # ดึงข้อมูลเฉพาะ video_title
 comments = list(collection.find({}, {"video_title": 1}))

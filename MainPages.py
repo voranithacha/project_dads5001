@@ -160,7 +160,7 @@ if selected_model and st.button("สร้าง Word Cloud"):
             st.stop() # หยุดการทำงานไม่ให้เกิด error เมื่อไม่มีข้อมูล
 
         # ตัดคำ
-        tokens = word_tokenize(full_text, engine="newmm")
+        tokens = word_tokenize(full_text, engine="newmm", custom_dict=custom_dictionary)
 
         # กำหนด Stopwords ที่ครอบคลุมมากขึ้น
         # รวม stopwords ที่คุณมีและเพิ่มคำที่ไม่ต้องการอื่นๆ

@@ -1,47 +1,91 @@
 import streamlit as st
+from collections import Counter
 import pandas as pd
-import duckdb as db
-import os
+from pymongo import MongoClient
+import json
 
-st.write("## Starbucks Dataset :coffee::mermaid:")
+st.title("YouTube Comments Analysis")
+st.markdown("""
+### 🔰 Introduction
+This project is an extension of the DADS5002 course, focusing on text classification using machine learning techniques. The objective is to automatically categorize comments extracted from YouTube videos into predefined classifications, helping to uncover insights from user feedback.
+"""
+"""### 🔍 Data Source and Collection
+Text Comments: Collected from YouTube comment sections of car review videos.
+Target Brand: BYD, specifically its top 3 best-selling models in the Thai market — Atto 3, Seal, and Dolphin.
+YouTube Channel: Data was gathered from the autolifethailand official channel, which has over 1.06 million subscribers and is known for its trusted automotive content.
+The dataset consists of comments from three BYD-related car review clips, which serve as the foundation for building and evaluating the classification model.
+"""
+"""### 💡 AI-Powered Insight Assistant
+To enhance the value of this project, an AI-powered assistant feature is integrated for premium users, enabling interactive exploration of classified comments. This assistant helps identify key highlights, detect emerging themes, and provide contextual insight summaries, supporting faster and smarter decision-making based on public sentiment.
+""")
 
-file_path = './data/Starbucks.csv'
-df = pd.read_csv(file_path)
-#df = pd.read_csv("Starbucks.csv")
-
-st.write(df)
-
-
-results1 = db.sql(f"""
-    SELECT count(*) as count
-    FROM df 
-""").df()
-
-results2 = db.sql(f"""
-    SELECT count(*) as count from (select distinct Country from df)a
-""").df()
-
-results3 = db.sql(f"""
-    SELECT count(*) as count from (select distinct "Ownership Type" from df)a
-""").df()
-
-
+# === YouTube Video IDs ===
+video_ids = ["OMV9F9zB4KU", "87lJCDADWCo", "CbkX7H-0BIU"]
+# === Show Videos ===
+st.subheader("▶️ Video Reference 🔴")
 col1, col2, col3 = st.columns(3)
-
 with col1:
-    st.markdown(f"<div style='text-align: center;'><h1 style='font-size: 23px;'>Total shop 🏡</h1></div>", unsafe_allow_html=True)
-    st.markdown(f"<div style='text-align: center;'><h1 style='font-size: 20px;'>{str(results1.iloc[0, 0])}</h1></div>", unsafe_allow_html=True)
-
+    st.video(f"https://www.youtube.com/watch?v={video_ids[0]}")
+    st.caption("BYD Atto3")
 with col2:
-    st.markdown(f"<div style='text-align: center;'><h1 style='font-size: 23px;'>Total Country 🗺️</h1></div>", unsafe_allow_html=True)
-    st.markdown(f"<div style='text-align: center;'><h1 style='font-size: 20px;'>{str(results2.iloc[0, 0])}</h1></div>", unsafe_allow_html=True)
-
+    st.video(f"https://www.youtube.com/watch?v={video_ids[1]}")
+    st.caption("BYD Seal")
 with col3:
-    st.markdown(f"<div style='text-align: center;'><h1 style='font-size: 23px;'>Ownership Type 🧑‍🤝‍🧑</h1></div>", unsafe_allow_html=True)
-    st.markdown(f"<div style='text-align: center;'><h1 style='font-size: 20px;'>{str(results3.iloc[0, 0])}</h1></div>", unsafe_allow_html=True)
+    st.video(f"https://www.youtube.com/watch?v={video_ids[2]}")
+    st.caption("BYD Dolphin")
+# === Sidebar: Conversation History ===
 
-st.markdown(f"<div margin-top: 20%;'><h2 style='font-size: 22px;'></h2></div>", unsafe_allow_html=True)
-st.markdown(f"<div margin-top: 20%;'><h2 style='font-size: 22px;'>Member</h2></div>", unsafe_allow_html=True)
-st.markdown(f"<p style='font-size: 18px;'>1. Sirima Pangpradang  6710422001</p>", unsafe_allow_html=True)
-st.markdown(f"<p style='font-size: 18px;'>2. Seriphap Siangnok   6710422002</p>", unsafe_allow_html=True)
-st.markdown(f"<p style='font-size: 18px;'>3. Voranitha Chaiaroon 6710422013</p>", unsafe_allow_html=True)
+# === MongoDB ===
+# Connect to MongoDB
+client = MongoClient("mongodb://localhost:27017/")  # adjust if needed
+db = client["db_comment"]
+collection = db["comments"]
+# Load JSON data
+with open("D:\DADS5001 - Tools\data\comments_data.json", "r", encoding="utf-8") as f:
+    try:
+        data = json.load(f)  # for array format
+    except json.JSONDecodeError:
+        # fallback if JSON is in NDJSON format
+        data = [json.loads(line) for line in f]
+
+collection.delete_many({})  #ลบก่อน insert
+
+# Insert into MongoDB
+if isinstance(data, list):
+    collection.insert_many(data)
+else:
+    collection.insert_one(data)
+
+# Query only video_title
+comments = list(collection.find({}, {"video_title": 1}))
+df = pd.DataFrame(comments)
+
+# Check column
+if 'video_title' not in df.columns:
+    st.error("ไม่พบคอลัมน์ 'video_title'")
+else:
+    # Count frequency of each title
+    video_counts = df['video_title'].value_counts().reset_index()
+    video_counts.columns = ['video_title', 'count']
+
+    # Create dynamic label based on keywords
+    def generate_label(title):
+        title_upper = title.upper()  # ป้องกันตัวเล็กใหญ่
+        if "ATTO" in title_upper:
+            return "BYD Atto3"
+        elif "SEAL" in title_upper:
+            return "BYD Seal"
+        elif "DOLPHIN" in title_upper:
+            return "BYD Dolphin"
+        else:
+            return "อื่น ๆ"  # หรือจะ return title เองก็ได้
+
+    # Apply label
+    video_counts["label"] = video_counts["video_title"].apply(generate_label)
+
+    # Reorder columns
+    result_df = video_counts[["label", "video_title", "count"]]
+
+    # Display
+    st.subheader("📊 Video Comment Counts")
+    st.dataframe(result_df)

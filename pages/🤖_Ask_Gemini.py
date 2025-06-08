@@ -1,7 +1,6 @@
 import streamlit as st
 import pandas as pd
 import io
-from comment_fetcher import get_all_comments
 from google import genai
 
 # Function to convert uploaded CSV bytes into a DataFrame

@@ -134,79 +134,70 @@ st.header("☁️ Word Cloud")
 # --- สร้าง Dropdown ให้ผู้ใช้เลือก Model ---
 selected_model = st.selectbox("เลือกรุ่นรถยนต์ที่ต้องการดู Word Cloud", list(model_keywords.keys()))
 
-if selected_model and st.button("สร้าง Word Cloud"):
+if selected_model: # ตรวจสอบแค่ว่ามีการเลือกโมเดลแล้วหรือไม่
     try:
         keyword = model_keywords[selected_model]
 
         # --- ส่วนนี้คือการ Query จาก MongoDB จริงของคุณ ---
-        # Query เฉพาะคอมเมนต์ที่ title มีคีย์เวิร์ดของรุ่นที่เลือก
         cursor = comments_collection.find(
             {"video_title": {"$regex": keyword, "$options": "i"}},
-            {"comment": 1} # ดึงเฉพาะ field 'comment' มาเพื่อประหยัดทรัพยากร
+            {"comment": 1}
         )
         # ---------------------------------------------------
 
         # ดึงและทำความสะอาดข้อความ
-        # re.sub(r"[^\u0E00-\u0E7F\s]+", " ", doc.get("comment", "")) 
-        #   - [^\u0E00-\u0E7F\s]+: หมายถึง อักขระใดๆ ที่ไม่ใช่ตัวอักษรไทย (\u0E00-\u0E7F) 
-        #     และไม่ใช่วรรคว่าง (\s) หนึ่งตัวหรือมากกว่า (+)
-        #   - " ": แทนที่ด้วยวรรคว่าง เพื่อไม่ให้คำที่ติดกันกลายเป็นคำเดียวกันหลังลบ
         comments = [re.sub(r"[^\u0E00-\u0E7F\s]+", " ", doc.get("comment", "")) for doc in cursor]
         full_text = " ".join(comments)
 
         # ตรวจสอบว่ามีข้อความให้ประมวลผลหรือไม่
-        if not full_text.strip(): # ใช้ .strip() เพื่อตรวจสอบว่ามีข้อความจริงๆ ไม่ใช่แค่วรรคว่าง
+        if not full_text.strip():
             st.warning(f"ไม่พบข้อมูลคอมเมนต์สำหรับรุ่น **{selected_model}** ที่มีคีย์เวิร์ด **'{keyword}'**")
-            st.stop() # หยุดการทำงานไม่ให้เกิด error เมื่อไม่มีข้อมูล
+            # ไม่ต้อง st.stop() ถ้าอยากให้ dropdown ยังใช้งานได้ต่อเนื่อง
+        else: # เพิ่ม else block เพื่อให้ Word Cloud สร้างเมื่อมีข้อมูลเท่านั้น
+            # ตัดคำโดยใช้ Custom Dictionary
+            tokens = word_tokenize(full_text, engine="newmm", custom_dict=custom_dictionary)
 
-        # ตัดคำ
-        tokens = word_tokenize(full_text, engine="newmm", custom_dict=custom_dictionary)
+            # กำหนด Stopwords ที่ครอบคลุมมากขึ้น
+            combined_stopwords = set(thai_stopwords()).union({
+                "ครับ", "ค่ะ", "ๆ", "นะ", "เลย", "เป็น", "คือ", "ว่า", "ได้", "จะ", "ก็", "แล้ว", 
+                "มาก", "น้อย", "ไป", "มา", "อยู่", "มี", "ไม่", "คน", "คัน", "ตัว", "รุ่น", "ทำไม", "แบบนี้", "เห็น", "เหมือน", "ใน", "รูป", "ถูก"
+            })
 
-        # กำหนด Stopwords ที่ครอบคลุมมากขึ้น
-        # รวม stopwords ที่คุณมีและเพิ่มคำที่ไม่ต้องการอื่นๆ
-        combined_stopwords = set(thai_stopwords()).union({
-            "ครับ", "ค่ะ", "ๆ", "นะ", "เลย", "เป็น", "คือ", "ว่า", "ได้", "จะ", "ก็", "แล้ว", 
-            "มาก", "น้อย", "ไป", "มา", "อยู่", "มี", "ไม่", "คน", "คัน", "ตัว", "รุ่น", "ทำไม", "แบบนี้", "เห็น", "เหมือน", "ใน", "รูป"
-        })
+            # กำหนด Allowed Words (คำที่คุณต้องการให้แสดงเท่านั้น)
+            allowed_words = {
+                "ดี", "แรง", "ประหยัด", "สวย", "น่ารัก", "ราคา", "คุ้ม", "สบาย", "เร็ว", "เงียบ",
+                "ซื้อ", "ขาย", "ถูก", "แพง", "ลด", "บาท", "ล้าน", "แสน", "เงิน", "เสียง",
+                "ขับขี่", "พลังงาน", "ถี่", "ทน", "คุณภาพ", "อะไหล่", "ปลอด", "ระบบ", 
+                "แจ้งเตือน", "ชาร์จ", "กล้อง", "แบต", "ช่วย", "เทค", "ออฟชั่น", "ไฟฟ้า",
+                "สี", "ภาย", "ข้างใน", "ทรง", "รูป", "หน้า", "หรู", "หรา", "นอก", "งาม", "ดีไซน์",
+                "รถยนต์ไฟฟ้า", "แบตเตอรี่", "รูปลักษณ์", "สมรรถนะ", "ความปลอดภัย" 
+            }
+            
+            # กรองคำ
+            filtered_tokens = [
+                w for w in tokens 
+                if w not in combined_stopwords and len(w) > 1 and w in allowed_words
+            ]
 
-        # กำหนด Allowed Words (คำที่คุณต้องการให้แสดงเท่านั้น)
-        allowed_words = {
-            "ดี", "แรง", "ประหยัด", "สวย", "น่ารัก", "ราคา", "คุ้ม", "สบาย", "เร็ว", "เงียบ",
-            "ซื้อ", "ขาย", "ถูก", "แพง", "ลด", "บาท", "ล้าน", "แสน", "เงิน", "เสียง",
-            "ขับขี่", "พลังงาน", "ถี่", "ทน", "คุณภาพ", "อะไหล่", "ปลอด", "ระบบ", 
-            "แจ้งเตือน", "ชาร์จ", "กล้อง", "แบต", "ช่วย", "เทค", "ออฟชั่น", "ไฟฟ้า",
-            "สี", "ภาย", "ข้างใน", "ทรง", "รูป", "หน้า", "หรู", "หรา", "นอก", "งาม", "ดีไซน์"
-        }
-        
-        # กรองคำ:
-        # 1. กรองคำที่ไม่ใช่ Stopwords 
-        # 2. กรองคำที่มีความยาวน้อยกว่า 2 ตัวอักษรออก (เช่น พยางค์เดียว)
-        # 3. กรองเฉพาะคำที่อยู่ใน allowed_words เท่านั้น
-        filtered_tokens = [
-            w for w in tokens 
-            if w not in combined_stopwords and len(w) > 1 and w in allowed_words
-        ]
+            # หากไม่มีคำที่ถูกกรองเลย ให้แจ้งเตือน
+            if not filtered_tokens:
+                st.warning(f"ไม่พบคำสำคัญที่เลือกในคอมเมนต์สำหรับรุ่น **{selected_model}**")
+            else: # สร้าง Word Cloud เมื่อมี filtered_tokens เท่านั้น
+                # สร้าง Word Cloud
+                wordcloud = WordCloud(
+                    font_path="fonts/THSarabunNew.ttf",
+                    width=800,
+                    height=400,
+                    background_color="white",
+                    collocations=False
+                ).generate(" ".join(filtered_tokens))
 
-        # หากไม่มีคำที่ถูกกรองเลย ให้แจ้งเตือนและหยุดการทำงาน
-        if not filtered_tokens:
-            st.warning(f"ไม่พบคำสำคัญที่เลือกในคอมเมนต์สำหรับรุ่น **{selected_model}**")
-            st.stop()
-
-        # สร้าง Word Cloud
-        wordcloud = WordCloud(
-            font_path="fonts/THSarabunNew.ttf",
-            width=800,
-            height=400,
-            background_color="white",
-            collocations=False # ป้องกันการรวมคำที่ไม่ใช่คำเดียว
-        ).generate(" ".join(filtered_tokens)) # ใช้ filtered_tokens ที่ถูกกรองแล้ว
-
-        # แสดงผล
-        fig, ax = plt.subplots()
-        ax.imshow(wordcloud, interpolation='bilinear')
-        ax.axis("off")
-        st.pyplot(fig)
-        st.success(f"แสดง Word Cloud สำหรับ: **{selected_model}**")
+                # แสดงผล
+                fig, ax = plt.subplots()
+                ax.imshow(wordcloud, interpolation='bilinear')
+                ax.axis("off")
+                st.pyplot(fig)
+                st.success(f"แสดง Word Cloud สำหรับ: **{selected_model}**")
 
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการสร้าง Word Cloud: {e}")

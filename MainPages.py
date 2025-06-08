@@ -134,7 +134,7 @@ if st.button("สร้าง Word Cloud"):
 
         # --- เอาคำที่ไม่ใช่ stopwords ---
         stopwords = set(thai_stopwords())
-        filtered_tokens = [word for word in tokens if word not in stopwords and len(word) > 1]
+        filtered_tokens = [word for word in tokens if word not in stopwords and len(word) > 3]
 
         # --- สร้าง Word Cloud ---
         final_text = " ".join(filtered_tokens)

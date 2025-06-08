@@ -3,8 +3,12 @@ from collections import Counter
 import pandas as pd
 from pymongo import MongoClient
 import json
+
+#for word clound
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
+from pythainlp.tokenize import word_tokenize
+from pythainlp.corpus.common import thai_stopwords
 
 st.title("YouTube Comments Analysis")
 st.markdown("""
@@ -110,31 +114,42 @@ else:
 comments_collection = db.comment
 
 # --- สร้าง Word Cloud ---
-st.header("☁️ Word Cloud จากคอมเมนต์")
+# --- UI Section ---
+st.header("☁️ Word Cloud จากความคิดเห็น (Filter ตาม Video ID)")
+video_ids = comments_collection.distinct("video_id")  # ดึง video_id ที่มีอยู่
+selected_video_id = st.selectbox("เลือก Video ID", video_ids)
 
 if st.button("สร้าง Word Cloud"):
     try:
-        # ดึงคอมเมนต์ทั้งหมด
-        cursor = comments_collection.find({}, {"comment": 1})
+        # --- ดึงคอมเมนต์ตาม video_id ที่เลือก ---
+        cursor = comments_collection.find(
+            {"video_id": selected_video_id},
+            {"comment": 1}
+        )
         comments = [doc.get("comment", "") for doc in cursor]
 
-        # รวมข้อความทั้งหมดเป็นชุดเดียว
-        text = " ".join(comments)
+        # --- รวมข้อความและตัดคำ ---
+        full_text = " ".join(comments)
+        tokens = word_tokenize(full_text, keep_whitespace=False)
 
-        # สร้าง Word Cloud ด้วยฟอนต์ภาษาไทย
+        # --- เอาคำที่ไม่ใช่ stopwords ---
+        stopwords = set(thai_stopwords())
+        filtered_tokens = [word for word in tokens if word not in stopwords and len(word) > 1]
+
+        # --- สร้าง Word Cloud ---
+        final_text = " ".join(filtered_tokens)
         wordcloud = WordCloud(
-            font_path="fonts/THSarabunNew.ttf",  # ฟอนต์ที่อัปโหลดไว้
+            font_path="fonts/THSarabunNew.ttf",
             width=800,
             height=400,
             background_color="white"
-        ).generate(text)
+        ).generate(final_text)
 
-        # แสดงผลใน Streamlit
+        # --- แสดงผล ---
         fig, ax = plt.subplots(figsize=(10, 5))
         ax.imshow(wordcloud, interpolation='bilinear')
         ax.axis("off")
         st.pyplot(fig)
 
     except Exception as e:
-        st.error(f"เกิดข้อผิดพลาดในการสร้าง Word Cloud: {e}")
-
+        st.error(f"เกิดข้อผิดพลาด: {e}")

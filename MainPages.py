@@ -37,14 +37,42 @@ with col3:
 
 # === MongoDB ===
 
-# Connect to MongoDB Atlas
-client = MongoClient("mongodb+srv://readwrite:OSbtDM3XE8nP2JqT@voranitha.z6voe4w.mongodb.net/")
-db = client["car"]
-collection = db["comments_collection"]  
+mongo_uri = "mongodb+srv://readwrite:OSbtDM3XE8nP2JqT@voranitha.z6voe4w.mongodb.net/"
+
+@st.cache_resource
+def get_database():
+    """
+    เชื่อมต่อกับ MongoDB Atlas และส่งคืน object ของ database
+    ใช้ st.cache_resource เพื่อให้เชื่อมต่อเพียงครั้งเดียวเมื่อแอปพลิเคชันเริ่มทำงาน
+    """
+    try:
+        client = MongoClient(mongo_uri)
+        client.admin.command('ping') # ทดสอบการเชื่อมต่อ
+        st.success("เชื่อมต่อกับ MongoDB Atlas สำเร็จ!")
+        return client.car # คืน database 'car'
+    except ConnectionFailure as e:
+        st.error(f"ไม่สามารถเชื่อมต่อกับ MongoDB ได้: {e}")
+        st.stop() # หยุดการทำงานของ Streamlit หากเชื่อมต่อไม่ได้
+    except OperationFailure as e:
+        st.error(f"เกิดข้อผิดพลาดในการดำเนินงาน MongoDB: {e}")
+        st.stop()
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดที่ไม่คาดคิด: {e}")
+        st.stop()
+
+# --- เริ่มต้น Streamlit App ---
+st.set_page_config(page_title="MongoDB Comment Explorer", layout="wide")
+st.title("💡 MongoDB Comment Explorer with Streamlit")
+
+# ดึง database object
+db = get_database()
+comments_collection = db.comment
+
+st.write(f"กำลังทำงานกับ Database: **`{db.name}`** และ Collection: **`{comments_collection.name}`**")
 
 # ดึงข้อมูลเฉพาะ video_title
-comments = list(collection.find({}, {"video_title": 1}))
-#comments = list(collection.find({}, {"_id": 0, "video_title": 1}))
+comments = list(comments_collection.find({}, {"video_title": 1}))
+#comments = list(comments_collection.find({}, {"_id": 0, "video_title": 1}))
 
 # แปลงเป็น DataFrame
 df = pd.DataFrame(comments)

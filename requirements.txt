@@ -3,3 +3,5 @@ plotly
 pandas
 duckdb
 pymongo
+google-genai
+joblib

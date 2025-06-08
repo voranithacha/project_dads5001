@@ -9,6 +9,7 @@ from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from pythainlp.tokenize import word_tokenize
 from pythainlp.corpus.common import thai_stopwords
+import re
 
 st.title("YouTube Comments Analysis")
 st.markdown("""
@@ -116,40 +117,24 @@ comments_collection = db.comment
 # --- สร้าง Word Cloud ---
 # --- UI Section ---
 st.header("☁️ Word Cloud จากความคิดเห็น (Filter ตาม Video ID)")
-video_ids = comments_collection.distinct("video_id")  # ดึง video_id ที่มีอยู่
-selected_video_id = st.selectbox("เลือก Video ID", video_ids)
+def clean_text(text):
+    text = re.sub(r"[^\u0E00-\u0E7F]+", " ", text)  # เก็บเฉพาะอักษรไทย
+    text = re.sub(r"\s+", " ", text).strip()
+    return text
 
-if st.button("สร้าง Word Cloud"):
-    try:
-        # --- ดึงคอมเมนต์ตาม video_id ที่เลือก ---
-        cursor = comments_collection.find(
-            {"video_id": selected_video_id},
-            {"comment": 1}
-        )
-        comments = [doc.get("comment", "") for doc in cursor]
+# ดึงความคิดเห็นทั้งหมดตาม video_id
+comments = [doc.get("comment", "") for doc in cursor]
+cleaned_comments = [clean_text(c) for c in comments]
+full_text = " ".join(cleaned_comments)
 
-        # --- รวมข้อความและตัดคำ ---
-        full_text = " ".join(comments)
-        tokens = word_tokenize(full_text, keep_whitespace=False)
+# ตัดคำ
+tokens = word_tokenize(full_text, engine="newmm", keep_whitespace=False)
 
-        # --- เอาคำที่ไม่ใช่ stopwords ---
-        stopwords = set(thai_stopwords())
-        filtered_tokens = [word for word in tokens if word not in stopwords and len(word) > 3]
+# กำจัด stopwords
+custom_stopwords = {"ครับ", "ค่ะ", "เลย", "ๆ", "นะ", "อ่ะ", "ฮะ", "อือ"}
+stopwords = set(thai_stopwords()).union(custom_stopwords)
+filtered_tokens = [w for w in tokens if w not in stopwords and len(w) > 1]
 
-        # --- สร้าง Word Cloud ---
-        final_text = " ".join(filtered_tokens)
-        wordcloud = WordCloud(
-            font_path="fonts/THSarabunNew.ttf",
-            width=800,
-            height=400,
-            background_color="white"
-        ).generate(final_text)
-
-        # --- แสดงผล ---
-        fig, ax = plt.subplots(figsize=(10, 5))
-        ax.imshow(wordcloud, interpolation='bilinear')
-        ax.axis("off")
-        st.pyplot(fig)
-
-    except Exception as e:
-        st.error(f"เกิดข้อผิดพลาด: {e}")
+# สร้าง wordcloud
+final_text = " ".join(filtered_tokens)
+wordcloud = WordCloud(font_path="fonts/THSarabunNew.ttf", width=800, height=400).generate(final_text)

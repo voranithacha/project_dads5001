@@ -115,26 +115,49 @@ else:
 comments_collection = db.comment
 
 # --- สร้าง Word Cloud ---
-# --- UI Section ---
-st.header("☁️ Word Cloud จากความคิดเห็น (Filter ตาม Video ID)")
-def clean_text(text):
-    text = re.sub(r"[^\u0E00-\u0E7F]+", " ", text)  # เก็บเฉพาะอักษรไทย
-    text = re.sub(r"\s+", " ", text).strip()
-    return text
+# --- กำหนด Mapping ชื่อ Model กับ Keyword ใน title ---
+model_keywords = {
+    "BYD Atto3": "ATTO",
+    "BYD Dolphin": "DOLPHIN",
+    "BYD Seal": "SEAL"
+}
 
-# ดึงความคิดเห็นทั้งหมดตาม video_id
-comments = [doc.get("comment", "") for doc in cursor]
-cleaned_comments = [clean_text(c) for c in comments]
-full_text = " ".join(cleaned_comments)
+# --- สร้าง Dropdown ให้ผู้ใช้เลือก Model ---
+selected_model = st.selectbox("เลือกรุ่นรถยนต์ที่ต้องการดู Word Cloud", list(model_keywords.keys()))
 
-# ตัดคำ
-tokens = word_tokenize(full_text, engine="newmm", keep_whitespace=False)
+if selected_model and st.button("สร้าง Word Cloud"):
+    try:
+        keyword = model_keywords[selected_model]
 
-# กำจัด stopwords
-custom_stopwords = {"ครับ", "ค่ะ", "เลย", "ๆ", "นะ", "อ่ะ", "ฮะ", "อือ"}
-stopwords = set(thai_stopwords()).union(custom_stopwords)
-filtered_tokens = [w for w in tokens if w not in stopwords and len(w) > 1]
+        # Query เฉพาะคอมเมนต์ที่ title มีคีย์เวิร์ดของรุ่นที่เลือก
+        cursor = comments_collection.find(
+            {"video_title": {"$regex": keyword, "$options": "i"}},
+            {"comment": 1}
+        )
 
-# สร้าง wordcloud
-final_text = " ".join(filtered_tokens)
-wordcloud = WordCloud(font_path="fonts/THSarabunNew.ttf", width=800, height=400).generate(final_text)
+        # ดึงและทำความสะอาดข้อความ
+        comments = [re.sub(r"[^\u0E00-\u0E7F]+", " ", doc.get("comment", "")) for doc in cursor]
+        full_text = " ".join(comments)
+
+        # ตัดคำและกรอง Stopwords
+        tokens = word_tokenize(full_text, engine="newmm")
+        stopwords = set(thai_stopwords()).union({"ครับ", "ค่ะ", "ๆ", "นะ", "เลย"})
+        filtered = [w for w in tokens if w not in stopwords and len(w) > 1]
+
+        # สร้าง Word Cloud
+        wordcloud = WordCloud(
+            font_path="fonts/THSarabunNew.ttf",
+            width=800,
+            height=400,
+            background_color="white"
+        ).generate(" ".join(filtered))
+
+        # แสดงผล
+        fig, ax = plt.subplots()
+        ax.imshow(wordcloud, interpolation='bilinear')
+        ax.axis("off")
+        st.pyplot(fig)
+        st.success(f"แสดง Word Cloud สำหรับ: {selected_model}")
+
+    except Exception as e:
+        st.error(f"เกิดข้อผิดพลาดในการสร้าง Word Cloud: {e}")

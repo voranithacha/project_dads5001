@@ -8,7 +8,8 @@ import json
 from wordcloud import WordCloud
 import matplotlib.pyplot as plt
 from pythainlp.tokenize import word_tokenize
-from pythainlp.corpus.common import thai_stopwords, common
+from pythainlp.corpus import thai_stopwords
+from pythainlp.corpus import common
 from pythainlp.util import Trie
 import re
 

@@ -142,6 +142,8 @@ if selected_model and st.button("สร้าง Word Cloud"):
         # ตัดคำและกรอง Stopwords
         tokens = word_tokenize(full_text, engine="newmm")
         stopwords = set(thai_stopwords()).union({"ครับ", "ค่ะ", "ๆ", "นะ", "เลย","า","ด","น"})
+        temp_filtered_tokens = [w for w in tokens if w not in custom_stopwords and len(w) > 1]
+        allowed_words = {"ดี", "แรง", "ประหยัด", "สวย", "น่ารัก", "ราคา", "คุ้ม", "สบาย", "เร็ว", "เงียบ","ราคา","ซื้อ","ขาย","ถูก","แพง","ลด","บาท","ล้าน","แสน","เงิน","เสียง","ขับขี่","พลังงาน","ถี่","ทน","คุณภาพ","อะไหล่","ปลอด","ระบบ","แจ้งเตือน","ชาร์จ","กล้อง","แบต","ช่วย","เทค","ออฟชั่น","ไฟฟ้า","สวย","สี","ภาย","ข้างใน","ทรง","รูป","หน้า","หรู","หรา","นอก","งาม","ดีไซน์"}
         filtered = [w for w in tokens if w not in stopwords and len(w) > 1]
 
         # สร้าง Word Cloud

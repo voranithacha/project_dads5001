@@ -71,7 +71,8 @@ comments_collection = db.comment
 st.write(f"กำลังทำงานกับ Database: **`{db.name}`** และ Collection: **`{comments_collection.name}`**")
 
 # ดึงข้อมูลเฉพาะ video_title
-comments = list(comments_collection.find({}, {"video_title": 1}))
+comments = list(collection.find({"video_title": {"$exists": True}}, {"_id": 0, "video_title": 1}))
+#comments = list(comments_collection.find({}, {"video_title": 1}))
 #comments = list(comments_collection.find({}, {"_id": 0, "video_title": 1}))
 
 # แปลงเป็น DataFrame

@@ -14,13 +14,9 @@ if option == "🔍 Preview Comments":
 # --- Section 2 ---
 elif option == "🧪 ML Modeling":
     st.subheader("🧪 สร้างโมเดล Machine Learning")
-    # เลือก model (Naive Bayes, SVM, etc.)
+    # เลือก model (Random Forest, Neural Network, etc.)
     model_type = st.selectbox("เลือกโมเดล", ["Naive Bayes", "SVM", "Random Forest"])
     st.write(f"คุณเลือกโมเดล: {model_type}")
 
-# --- Section 3 ---
-elif option == "📈 Result Visualization":
-    st.subheader("📈 ผลการจำแนกคอมเมนต์")
-    # แสดง confusion matrix หรือ accuracy score
-    st.write("แสดงกราฟ performance ของโมเดล")
+
 

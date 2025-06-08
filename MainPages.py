@@ -42,7 +42,8 @@ db = client["car"]
 collection = db["comments"]  
 
 # ดึงข้อมูลเฉพาะ video_title
-comments = list(collection.find({}, {"video_title": 1}))
+#comments = list(collection.find({}, {"video_title": 1}))
+comments = list(collection.find({}, {"_id": 0, "video_title": 1}))
 
 # แปลงเป็น DataFrame
 df = pd.DataFrame(comments)

@@ -5,3 +5,5 @@ duckdb
 pymongo
 google-genai
 joblib
+wordcloud 
+matplotlib

@@ -3,6 +3,62 @@ import pandas as pd
 import io
 from google import genai
 
+#-------
+
+from auth import login_user, register_user
+
+# === ตั้งค่าค่าเริ่มต้นของ session state ===
+if "logged_in" not in st.session_state:
+    st.session_state["logged_in"] = False
+if "username" not in st.session_state:
+    st.session_state["username"] = ""
+
+# === หากยังไม่ล็อกอิน ให้แสดงหน้า login/register ===
+if not st.session_state["logged_in"]:
+    st.title("🔐 กรุณาเข้าสู่ระบบเพื่อใช้งาน Ask AI")
+
+    tab1, tab2 = st.tabs(["เข้าสู่ระบบ", "สมัครสมาชิก"])
+
+    with tab1:
+        username = st.text_input("Username", key="login_user")
+        password = st.text_input("Password", type="password", key="login_pass")
+        if st.button("เข้าสู่ระบบ"):
+            if login_user(username, password):
+                st.session_state["logged_in"] = True
+                st.session_state["username"] = username
+                st.success("✅ เข้าสู่ระบบสำเร็จ")
+                st.experimental_rerun()
+            else:
+                st.error("❌ Username หรือ Password ไม่ถูกต้อง")
+
+    with tab2:
+        new_user = st.text_input("ตั้ง Username", key="reg_user")
+        new_pass = st.text_input("ตั้ง Password", type="password", key="reg_pass")
+        if st.button("ลงทะเบียน"):
+            if register_user(new_user, new_pass):
+                st.success("✅ สมัครสมาชิกสำเร็จ! โปรดเข้าสู่ระบบ")
+            else:
+                st.error("⚠️ Username นี้ถูกใช้แล้ว")
+
+    st.stop()
+
+# === ถ้าล็อกอินแล้ว แสดงเนื้อหาหลักของ Ask AI ===
+st.title("🤖 ยินดีต้อนรับสู่ Ask AI")
+st.write(f"คุณล็อกอินในชื่อ: `{st.session_state['username']}`")
+
+if st.button("ออกจากระบบ"):
+    st.session_state["logged_in"] = False
+    st.session_state["username"] = ""
+    st.experimental_rerun()
+
+# 👇 ส่วนนี้ใส่ฟีเจอร์ Chatbot ของคุณได้เลย
+st.write("ที่นี่คือส่วนของ chatbot หรือฟังก์ชัน AI อื่น ๆ")
+
+
+
+
+#----------------
+
 # Function to convert uploaded CSV bytes into a DataFrame
 def convert_bytes_to_dataframe(byte_data, encoding='utf-8', **kwargs):
     try:

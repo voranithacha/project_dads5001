@@ -16,16 +16,16 @@ import re
 st.title("YouTube Comments Analysis")
 st.markdown("""
 ### 🔰 Introduction
-This project is an extension of the DADS5002 course, focusing on text classification using machine learning techniques. The objective is to automatically categorize comments extracted from YouTube videos into predefined classifications, helping to uncover insights from user feedback.
+Applying machine learning techniques to text classification. Its primary objective is to automatically categorize comments from YouTube car review videos into predefined categories, enabling deeper insights into public sentiment and user feedback.
 """
 """### 🔍 Data Source and Collection
-Text Comments: Collected from YouTube comment sections of car review videos.
-Target Brand: BYD, specifically its top 3 best-selling models in the Thai market — Atto 3, Seal, and Dolphin.
-YouTube Channel: Data was gathered from the autolifethailand official channel, which has over 1.06 million subscribers and is known for its trusted automotive content.
-The dataset consists of comments from three BYD-related car review clips, which serve as the foundation for building and evaluating the classification model.
+Text Comments: Extracted from the comment sections of YouTube car review videos.  
+Target Brand: BYD, with a focus on its three best-selling models in the Thai market — Atto 3, Seal, and Dolphin.  
+YouTube Channel: Data was collected from the official *autolifethailand* channel, a trusted automotive source with over 1.06 million subscribers. 
+Comments were gathered from three BYD-related review videos, which form the basis for training and evaluating the classification model.
 """
 """### 💡 AI-Powered Insight Assistant
-To enhance the value of this project, an AI-powered assistant feature is integrated for premium users, enabling interactive exploration of classified comments. This assistant helps identify key highlights, detect emerging themes, and provide contextual insight summaries, supporting faster and smarter decision-making based on public sentiment.
+To enhance the value of this project, an AI-powered assistant feature is included for premium users. This tool enables interactive exploration of classified comments, identifies key discussion points, highlights emerging trends, and provides contextual insight summaries—supporting smarter and faster decision-making driven by public opinion.
 """)
 
 # === YouTube Video IDs ===

@@ -11,8 +11,12 @@ if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
     con = db.connect('comment.duckdb')
-    df = con.execute("SELECT * FROM comment_data")  # Should work now
-    st.write(df)
+    if 'con' not in st.session_state:
+      st.session_state.con = db.connect('comment.duckdb')
+    con = st.session_state.con
+    df = con.execute("SELECT * FROM comment_data").fetchdf()
+    st.write("📄 แสดงตัวอย่างข้อมูลจากฐานข้อมูล:")
+    st.write(df.head())
 
 # --- Section 2 ---
 elif option == "🧪 ML Modeling":

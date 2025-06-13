@@ -10,6 +10,7 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
+    st.write("test")
     con = db.connect('comment.duckdb')
     if 'con' not in st.session_state:
       st.session_state.con = db.connect('comment.duckdb')

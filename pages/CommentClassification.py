@@ -1,14 +1,6 @@
 import streamlit as st
 import duckdb as db
 import pandas as pd # Import pandas to handle DataFrames
-
-if con:
-    st.subheader("ตรวจสอบข้อมูลทั้งหมดในตาราง (ชั่วคราว)")
-    try:
-        all_data = con.execute("SELECT * FROM comment_data LIMIT 10;").fetchdf()
-        st.write(all_data)
-    except db.Error as e:
-        st.error(f"❌ ไม่สามารถดึงข้อมูลจากตาราง comment_data ได้: {e}")
         
 st.title("🧠 Comment Classification")
 
@@ -19,7 +11,7 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 # Make sure 'comment.duckdb' exists and is in the same directory as your Streamlit app
 con = None # Initialize connection to None
 try:
-    con = db.connect('comment.duckdb')
+    con = db.connect('./comment.duckdb')
 except Exception as e:
     st.error(f"⚠️ ไม่สามารถเชื่อมต่อฐานข้อมูลได้: {e}")
     st.info("โปรดตรวจสอบว่าไฟล์ 'comment.duckdb' อยู่ในตำแหน่งที่ถูกต้องและไม่เสียหาย")

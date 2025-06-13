@@ -3,11 +3,6 @@ import duckdb as db
 
 st.title("🧠 Comment Classification")
 
-con = db.connect('comment.duckdb')
-con.execute("CREATE OR REPLACE TABLE comment_data AS SELECT * FROM read_csv_auto('./data/comments_data.csv')")
-df = con.execute("SELECT * FROM comment_data")
-st.write(df)
-
 # --- Sub-topic Navigation ---
 option = st.radio("เลือกหัวข้อย่อย", ["🔍 Preview Comments", "🧪 ML Modeling"])
 
@@ -15,9 +10,7 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
-    st.markdown("---")
     con = db.connect('comment.duckdb')
-
     comment_type = st.selectbox("เลือกโมเดลรถ", ["BYD Atto3", "BYD Seal", "BYD Dolphin"])
     car_video_mapping = { "BYD Atto3": "OMV9F9zB4KU", "BYD Seal": "87lJCDADWCo", "BYD Dolphin": "CbkX7H-0BIU"}
     selected_video_id = car_video_mapping[comment_type]

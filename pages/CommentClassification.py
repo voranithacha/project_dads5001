@@ -2,6 +2,14 @@ import streamlit as st
 import duckdb as db
 import pandas as pd # Import pandas to handle DataFrames
 
+if con:
+    st.subheader("ตรวจสอบข้อมูลทั้งหมดในตาราง (ชั่วคราว)")
+    try:
+        all_data = con.execute("SELECT * FROM comment_data LIMIT 10;").fetchdf()
+        st.write(all_data)
+    except db.Error as e:
+        st.error(f"❌ ไม่สามารถดึงข้อมูลจากตาราง comment_data ได้: {e}")
+        
 st.title("🧠 Comment Classification")
 
 # --- Sub-topic Navigation ---

@@ -10,13 +10,12 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
-    con = db.connect('comment.duckdb')
-    st.markdown("---")
     comment_type = st.selectbox("เลือกโมเดลรถ", ["BYD Atto3", "BYD Seal", "BYD Dolphin"])
     car_video_mapping = { "BYD Atto3": "OMV9F9zB4KU", "BYD Seal": "87lJCDADWCo", "BYD Dolphin": "CbkX7H-0BIU"}
     selected_video_id = car_video_mapping[comment_type]
     st.markdown("---")
     st.write("หมวด ราคา")
+    con = db.connect('comment.duckdb')
     price = con.execute(f"""
     SELECT distinct comment                    
     FROM comment_data 

@@ -14,7 +14,7 @@ if option == "🔍 Preview Comments":
 
     con = db.connect('comment.duckdb')
     result = con.execute(f"""SELECT * FROM comment_data""")
-    st.writr(result)
+    st.write(result)
     st.write("test1")
     car_video_mapping = { "BYD Atto3": "OMV9F9zB4KU", "BYD Seal": "87lJCDADWCo", "BYD Dolphin": "CbkX7H-0BIU"}
     st.write("test2")

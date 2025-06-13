@@ -1,11 +1,11 @@
 import streamlit as st
 import duckdb as db
-
+st.write("test")
 st.title("🧠 Comment Classification")
 
 # --- Sub-topic Navigation ---
 option = st.radio("เลือกหัวข้อย่อย", ["🔍 Preview Comments", "🧪 ML Modeling"])
-
+st.write("test")
 # --- Section 1 ---
 if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")

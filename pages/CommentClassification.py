@@ -11,7 +11,7 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 # Make sure 'comment.duckdb' exists and is in the same directory as your Streamlit app
 con = None # Initialize connection to None
 try:
-    con = db.connect('./comment.duckdb')
+    con = db.connect('comment.duckdb')
 except Exception as e:
     st.error(f"⚠️ ไม่สามารถเชื่อมต่อฐานข้อมูลได้: {e}")
     st.info("โปรดตรวจสอบว่าไฟล์ 'comment.duckdb' อยู่ในตำแหน่งที่ถูกต้องและไม่เสียหาย")

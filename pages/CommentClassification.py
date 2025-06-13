@@ -13,9 +13,11 @@ if option == "🔍 Preview Comments":
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
 
     con = db.connect('comment.duckdb')
+    st.write("test1")
     car_video_mapping = { "BYD Atto3": "OMV9F9zB4KU", "BYD Seal": "87lJCDADWCo", "BYD Dolphin": "CbkX7H-0BIU"}
+    st.write("test2")
     selected_video_id = car_video_mapping[comment_type]
-    
+    st.write("test3")
     st.write("หมวด ราคา")
     price = con.execute(f"""
     SELECT distinct comment                    

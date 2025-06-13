@@ -4,6 +4,7 @@ import duckdb as db
 st.title("🧠 Comment Classification")
 
 con = db.connect('comment.duckdb')
+con.execute("CREATE OR REPLACE TABLE comment_data AS SELECT * FROM read_csv_auto('./data/comments_data.csv')")
 df = con.execute("SELECT * FROM comment_data")
 st.write(df)
 

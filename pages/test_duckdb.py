@@ -18,7 +18,7 @@ else:
 con = db.connect('comment.duckdb')
 
 # Load CSV data into a new table
-con.execute("CREATE OR REPLACE TABLE comment_data AS SELECT * FROM read_csv_auto('./data/comments_data.csv')")
+# con.execute("CREATE OR REPLACE TABLE comment_data AS SELECT * FROM read_csv_auto('./data/comments_data.csv')")
 
 df = con.execute("SELECT * FROM comment_data")  # Should work now
 st.write(df)

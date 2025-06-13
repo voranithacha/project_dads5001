@@ -1,6 +1,6 @@
 import streamlit as st
 import duckdb as db
-
+con = db.connect('comment.duckdb')
 st.title("🧠 Comment Classification")
 
 # --- Sub-topic Navigation ---
@@ -10,7 +10,6 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
-    con = db.connect('comment.duckdb')
     df = con.execute("SELECT * FROM comment_data")  # Should work now
     st.write(df)
     st.markdown("---")

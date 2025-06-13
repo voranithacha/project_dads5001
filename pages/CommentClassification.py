@@ -1,6 +1,7 @@
 import streamlit as st
 import duckdb as db
 
+con = db.connect('comment.duckdb')
 st.title("🧠 Comment Classification")
 
 # --- Sub-topic Navigation ---
@@ -11,8 +12,7 @@ if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     # ดึงคอมเมนต์จาก MongoDB หรือ CSV แล้วโชว์
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
-
-    con = db.connect('comment.duckdb')
+    
     st.write("test1")
     car_video_mapping = { "BYD Atto3": "OMV9F9zB4KU", "BYD Seal": "87lJCDADWCo", "BYD Dolphin": "CbkX7H-0BIU"}
     st.write("test2")

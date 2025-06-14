@@ -1,13 +1,16 @@
 import streamlit as st
 import pandas as pd
 import io
+import json
 from google import genai
 
 #-------
 
-from auth import login_user, register_user
+from auth.user_auth import login_or_register #เรียกระบบล๊อกอิน
 
-# === ตั้งค่าค่าเริ่มต้นของ session state ===
+# === ตรวจสิทธิ์ก่อนเข้าถึง ===
+login_or_register()
+
 if "logged_in" not in st.session_state:
     st.session_state["logged_in"] = False
 if "username" not in st.session_state:
@@ -53,9 +56,6 @@ if st.button("ออกจากระบบ"):
 
 # 👇 ส่วนนี้ใส่ฟีเจอร์ Chatbot ของคุณได้เลย
 st.write("ที่นี่คือส่วนของ chatbot หรือฟังก์ชัน AI อื่น ๆ")
-
-
-
 
 #----------------
 

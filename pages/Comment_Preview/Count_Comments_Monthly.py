@@ -32,6 +32,11 @@ def run():
     # === COUNT COMMENTS ===
     comment_counts = df.groupby(['year_month', 'video_title']).size().reset_index(name='comment_count')
 
+    # === SORT year_month ===
+    comment_counts['year_month'] = pd.to_datetime(comment_counts['year_month'])
+    comment_counts = comment_counts.sort_values('year_month')
+    comment_counts['year_month'] = comment_counts['year_month'].dt.strftime('%Y-%m')
+
     # === PLOT WITH PLOTLY ===
     fig = px.line(
         comment_counts,
@@ -39,22 +44,25 @@ def run():
         y='comment_count',
         color='video_title',
         markers=True,
-        title='จำนวนการแสดงความคิดเห็นในแต่ละเดือน',
         labels={
-            'year_month': 'Month',
+            'year_month': 'month',
             'comment_count': 'จำนวน Comments',
-            'video_title': 'Video Name'
+            #'video_title': 'Video Name',
         }
     )
 
     # === CUSTOMIZE LAYOUT ===
     fig.update_layout(
         width=1000,
-        height=400,
-        xaxis=dict(tickangle=90),
+        height=600,
+        xaxis=dict(
+            tickangle=90,
+            tickmode='array',
+            tickvals=comment_counts['year_month'].unique(),  # แสดงทุกเดือนที่มี
+        ),
         legend=dict(
-            orientation="h",  # แนวนอน
-            y=-0.3,           # อยู่ด้านล่างกราฟ
+            orientation="h",
+            y=1.1,        # เหนือกราฟ
             x=0.5,
             xanchor='center'
         )
@@ -65,6 +73,8 @@ def run():
     # === OPTIONAL: SHOW RAW DATA ===
     with st.expander("📋 ดูข้อมูลดิบ"):
         st.dataframe(comment_counts)
+
+
 
 
 

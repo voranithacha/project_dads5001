@@ -11,6 +11,33 @@ option = st.radio("เลือกหัวข้อย่อย", ["🔍 Previe
 if option == "🔍 Preview Comments":
     st.subheader("🔍 ดูตัวอย่างคอมเมนต์")
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
+
+    con = db.connect('./comment.duckdb')
+    con.execute("CREATE OR REPLACE TABLE yt_comment_full AS SELECT * FROM read_csv_auto('./data/youtube_comments_full.csv')")
+
+    # comment Top5 (liked)
+    st.write("Top 5 comments with Most Liked")
+    top_like = con.execute("SELECT comment_text_original as comment, like_count FROM yt_comment_full order by like_count desc limit 5;")
+    st.write(top_like)
+    # comment Top5 (replied)
+    st.write("Top 5 comments with Most Replied Comments")
+    top_reply = con.execute("SELECT comment_text_original as comment, reply_count FROM yt_comment_full order by reply_count desc limit 5;")
+    st.write(top_reply)
+    # Top 5 user ที่ comment เยอะสุด(comment หลาย comment) 
+    st.write("Top 5 Users with the Most Comments")
+    top_like = con.execute("SELECT author_display_name, count(1) as total_comment FROM yt_comment_full group by author_display_name order by count(1) desc limit 5;")
+    st.write(top_like)
+    # Top 5 comment ที่ยาวที่สุด
+    st.write("Top 5 long Comments")
+    top_like = con.execute("SELECT comment_text_original as comment, length(comment_text_original) as length_comment FROM yt_comment_full order by length(comment_text_original) desc limit 5;")
+    st.write(top_like)
+    # count comment เเบ่งเป็นเดือน
+    st.write("Total comment of each year")
+    top_like = con.execute("SELECT strftime('%Y-%m', CAST(published_at AS TIMESTAMP)) as year_month , count(1) as total_comment FROM yt_comment_full group by year_month order by year_month asc;")
+    st.write(top_like)
+
+    st.markdown("---")
+
     comment_type = st.selectbox("เลือกโมเดลรถ", ["BYD Atto3", "BYD Seal", "BYD Dolphin"])
     car_video_mapping = {"BYD Atto3": "OMV9F9zB4KU", "BYD Seal": "87lJCDADWCo", "BYD Dolphin": "CbkX7H-0BIU"}
     selected_video_id = car_video_mapping[comment_type]

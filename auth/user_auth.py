@@ -67,3 +67,5 @@ def login_or_register():
                     st.error("⚠️ Username นี้ถูกใช้แล้ว")
 
         st.stop()
+
+print("🔍 users.json path =", USER_FILE)

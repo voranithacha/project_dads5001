@@ -87,18 +87,6 @@ video_ids = ["OMV9F9zB4KU", "87lJCDADWCo", "CbkX7H-0BIU"]
 # Page Header
 st.header("🤖 Analysis of BYD YouTube Comment Using Gemini-2.0-Flash")
 
-# Show Videos
-st.subheader("▶️ Video Reference 🔴")
-col1, col2, col3 = st.columns(3)
-with col1:
-    st.video(f"https://www.youtube.com/watch?v={video_ids[0]}")
-    st.caption("video 1")
-with col2:
-    st.video(f"https://www.youtube.com/watch?v={video_ids[1]}")
-    st.caption("video 2")
-with col3:
-    st.video(f"https://www.youtube.com/watch?v={video_ids[2]}")
-    st.caption("video 3")
 
 # Sidebar for conversation history
 with st.sidebar:

@@ -1,6 +1,7 @@
 import streamlit as st
 from pymongo import MongoClient
 import hashlib
+import datetime
 
 def get_db():
     client = MongoClient(st.secrets["MONGO_URI"])
@@ -10,16 +11,19 @@ def get_db():
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-def register_user(username, password):
+def register_user(username, password, full_name, email, user_type):
     users = get_db()
-    st.write("📡 เชื่อมต่อ MongoDB สำเร็จ")
+    
     if users.find_one({"username": username}):
         return False
     users.insert_one({
         "username": username,
-        "password": hash_password(password)
+        "password": hash_password(password),
+        "full_name": full_name,
+        "email": email,
+        "user_type": user_type,
+        "created_at": datetime.datetime.utcnow()
     })
-    st.success("✅ บันทึกข้อมูลลง MongoDB แล้ว")
     return True
 
 def login_user(username, password):

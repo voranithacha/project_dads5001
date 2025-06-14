@@ -1,38 +1,29 @@
-import json
-import os
-import hashlib
 import streamlit as st
+from pymongo import MongoClient
+import hashlib
 
-BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-USER_FILE = os.path.join(BASE_DIR, "users.json")
-
-def load_users():
-    if os.path.exists(USER_FILE):
-        try:
-            with open(USER_FILE, "r") as f:
-                return json.load(f)
-        except json.JSONDecodeError:
-            return {}  # ถ้าไฟล์ว่างหรือผิด
-    return {}
-
-def save_users(users):
-    with open(USER_FILE, "w") as f:
-        json.dump(users, f)
+def get_db():
+    client = MongoClient(st.secrets["MONGO_URI"])
+    db = client["user_db"]
+    return db["users"]
 
 def hash_password(password):
     return hashlib.sha256(password.encode()).hexdigest()
 
-def login_user(username, password):
-    users = load_users()
-    return username in users and users[username] == hash_password(password)
-
 def register_user(username, password):
-    users = load_users()
-    if username in users:
+    users = get_db()
+    if users.find_one({"username": username}):
         return False
-    users[username] = hash_password(password)
-    save_users(users)
+    users.insert_one({
+        "username": username,
+        "password": hash_password(password)
+    })
     return True
+
+def login_user(username, password):
+    users = get_db()
+    user = users.find_one({"username": username})
+    return user and user["password"] == hash_password(password)
 
 def login_or_register():
     if "logged_in" not in st.session_state:
@@ -41,8 +32,7 @@ def login_or_register():
         st.session_state["username"] = ""
 
     if not st.session_state["logged_in"]:
-        st.title("🔐 กรุณาเข้าสู่ระบบเพื่อใช้งาน Ask AI")
-
+        st.title("🔐 เข้าสู่ระบบเพื่อใช้งาน Ask AI")
         tab1, tab2 = st.tabs(["เข้าสู่ระบบ", "สมัครสมาชิก"])
 
         with tab1:
@@ -67,5 +57,3 @@ def login_or_register():
                     st.error("⚠️ Username นี้ถูกใช้แล้ว")
 
         st.stop()
-
-print("🔍 users.json path =", USER_FILE)

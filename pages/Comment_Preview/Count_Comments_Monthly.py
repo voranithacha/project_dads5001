@@ -8,6 +8,6 @@ st.subheader("📊 จำนวนการแสดงความคิดเ�
 
 # กำหนด path ของไฟล์ CSV
 csv_path = './data/youtube_comments_full.csv'
-
+st.dataframe(df)
 
 

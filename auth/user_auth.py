@@ -12,6 +12,7 @@ def hash_password(password):
 
 def register_user(username, password):
     users = get_db()
+    st.write("📡 เชื่อมต่อ MongoDB ได้")
     if users.find_one({"username": username}):
         return False
     users.insert_one({

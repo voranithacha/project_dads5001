@@ -50,11 +50,21 @@ def login_or_register():
                     st.error("❌ Username หรือ Password ไม่ถูกต้อง")
 
         with tab2:
+            st.subheader("📝 สมัครสมาชิกใหม่")
+
+            full_name = st.text_input("ชื่อ-นามสกุล", key="reg_name")
+            email = st.text_input("Email", key="reg_email")
+            user_type = st.selectbox("ประเภทผู้ใช้", ["นักศึกษา", "อาจารย์", "บุคคลทั่วไป"], key="reg_type")
+            
             new_user = st.text_input("ตั้ง Username", key="reg_user")
             new_pass = st.text_input("ตั้ง Password", type="password", key="reg_pass")
-            if st.button("ลงทะเบียน", key="register_button"):
-                st.write("🚀 ปุ่มลงทะเบียนถูกกดแล้ว")
-                if register_user(new_user, new_pass):
+            
+            if st.button("ลงทะเบียน"):
+                if not all([full_name, email, new_user, new_pass]):
+                    st.warning("กรุณากรอกข้อมูลให้ครบทุกช่อง")
+                else:
+                    success = register_user(new_user, new_pass, full_name, email, user_type)
+                if success:
                     st.success("✅ สมัครสมาชิกสำเร็จ! โปรดเข้าสู่ระบบ")
                 else:
                     st.error("⚠️ Username นี้ถูกใช้แล้ว")

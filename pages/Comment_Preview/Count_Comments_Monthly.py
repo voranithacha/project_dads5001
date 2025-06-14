@@ -1,19 +1,12 @@
 import pandas as pd
 import streamlit as st
-import matplotlib.pyplot as plt
-from wordcloud import WordCloud
-from pythainlp.tokenize import word_tokenize
-from pythainlp.tag import pos_tag
-from sklearn.feature_extraction.text import CountVectorizer
 import re
 import os
 
 def run():
     # === PATH CONFIG ===
     CSV_PATH = './data/youtube_comments_full.csv'
-    FONT_PATH = './fonts/Sarabun-Regular.ttf'
-    
-    st.subheader("☁️ Word Cloud จากความคิดเห็นใน YouTube")
+    st.subheader("⌨ จำนวนการแสดงความคิดเห็นในเเต่ละเดือน")
     
     # === FILE CHECK ===
     if not os.path.exists(CSV_PATH):

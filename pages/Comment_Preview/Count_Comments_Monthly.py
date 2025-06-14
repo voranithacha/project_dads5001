@@ -7,7 +7,7 @@ import os
 st.subheader("📊 จำนวนการแสดงความคิดเห็นในแต่ละเดือน")
 
 # กำหนด path ของไฟล์ CSV
-csv_path = './data/youtube_comments_full.csv'
+csv_path = os.path.abspath('./data/youtube_comments_full.csv')
 
 # ตรวจสอบว่าไฟล์มีอยู่จริง
 if not os.path.exists(csv_path):

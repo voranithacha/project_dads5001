@@ -59,7 +59,6 @@ if option == "🔍 Preview Comments":
 
 # --- Section 2 ---
 elif option == "🧪 ML Modeling":
-    st.subheader("🧪 สร้างโมเดล Machine Learning")
-    # เลือก model (Random Forest, Neural Network, etc.)
-    model_type = st.selectbox("เลือกโมเดล", ["Random Forest", "Neural Network"])
-    st.write(f"คุณเลือกโมเดล: {model_type}")
+    st.markdown("[ไปที่ ML Modeling](https://projectdads5001-otbopsjs5ndt36ag2gtdm3.streamlit.app/ML_trial1)")
+
+

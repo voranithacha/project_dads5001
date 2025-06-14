@@ -23,8 +23,8 @@ def run():
     # === PREPROCESS DATE ===
     if "published_at" in df.columns:
         df['published_at'] = pd.to_datetime(df['published_at'], errors='coerce')
-        df = df.dropna(subset=['published_at'])  # ลบแถวที่มีวันที่ไม่ถูกต้อง
-        df['year_month'] = df['published_at'].dt.to_period('M').astype(str)  # เช่น 2025-04
+        df = df.dropna(subset=['published_at'])
+        df['year_month'] = df['published_at'].dt.to_period('M').astype(str)
     else:
         st.error("ไม่พบคอลัมน์ 'published_at' ในไฟล์ CSV")
         return
@@ -39,19 +39,36 @@ def run():
         y='comment_count',
         color='video_title',
         markers=True,
-        title='จำนวนคอมเมนต์ในแต่ละเดือน แยกตามชื่อวิดีโอ',
-        #labels={
-        #    'year_month': 'เดือน',
-        #    'comment_count': 'จำนวนคอมเมนต์',
-        #    'video_title': 'ชื่อวิดีโอ'
-        #}
+        title='จำนวนการแสดงความคิดเห็นในแต่ละเดือน',
+        labels={
+            'year_month': 'Month',
+            'comment_count': 'จำนวน Comments',
+            'video_title': 'Video Name'
+        }
     )
-    fig.update_layout(xaxis=dict(tickangle=45))
+
+    # === CUSTOMIZE LAYOUT ===
+    fig.update_layout(
+        width=1000,
+        height=600,
+        xaxis=dict(tickangle=45),
+        legend=dict(
+            orientation="h",  # แนวนอน
+            y=-0.3,           # อยู่ด้านล่างกราฟ
+            x=0.5,
+            xanchor='center'
+        )
+    )
+
     st.plotly_chart(fig, use_container_width=True)
 
     # === OPTIONAL: SHOW RAW DATA ===
     with st.expander("📋 ดูข้อมูลดิบ"):
         st.dataframe(comment_counts)
+
+# เรียกใช้ฟังก์ชัน
+run()
+
 
 
             

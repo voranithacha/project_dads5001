@@ -47,7 +47,7 @@ def run():
         labels={
             'year_month': 'month',
             'comment_count': 'จำนวน Comments',
-            #'video_title': 'Video Name',
+            'video_title': 'Video Name',
         }
     )
 

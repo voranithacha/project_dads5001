@@ -11,7 +11,7 @@ sub_page = st.sidebar.radio("เลือกหัวข้อการ Preview 
 
 # เงื่อนไขการแสดงผลตามหน้าที่เลือก
 if sub_page == "จำนวนการ comments เเต่ละเดือน":
-    
+    from pages.Comment_Preview import Count_Comments_Monthly
 elif sub_page == "Word Cloud":
     from pages.Comment_Preview import Word_Cloud
 elif sub_page == "subpage2":

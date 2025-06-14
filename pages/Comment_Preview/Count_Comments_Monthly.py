@@ -40,11 +40,11 @@ def run():
         color='video_title',
         markers=True,
         title='จำนวนคอมเมนต์ในแต่ละเดือน แยกตามชื่อวิดีโอ',
-        labels={
-            'year_month': 'เดือน',
-            'comment_count': 'จำนวนคอมเมนต์',
-            'video_title': 'ชื่อวิดีโอ'
-        }
+        #labels={
+        #    'year_month': 'เดือน',
+        #    'comment_count': 'จำนวนคอมเมนต์',
+        #    'video_title': 'ชื่อวิดีโอ'
+        #}
     )
     fig.update_layout(xaxis=dict(tickangle=45))
     st.plotly_chart(fig, use_container_width=True)

@@ -50,8 +50,8 @@ def run():
     # === CUSTOMIZE LAYOUT ===
     fig.update_layout(
         width=1000,
-        height=600,
-        xaxis=dict(tickangle=45),
+        height=400,
+        xaxis=dict(tickangle=90),
         legend=dict(
             orientation="h",  # แนวนอน
             y=-0.3,           # อยู่ด้านล่างกราฟ
@@ -66,8 +66,7 @@ def run():
     with st.expander("📋 ดูข้อมูลดิบ"):
         st.dataframe(comment_counts)
 
-# เรียกใช้ฟังก์ชัน
-run()
+
 
 
 

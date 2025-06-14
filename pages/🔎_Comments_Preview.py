@@ -9,8 +9,8 @@ import re
 import os
 
 # === PATH CONFIG ===
-CSV_PATH = '../data/youtube_comments_full.csv'
-FONT_PATH = '../fonts/Sarabun-Regular.ttf'
+CSV_PATH = './data/youtube_comments_full.csv'
+FONT_PATH = './fonts/Sarabun-Regular.ttf'
 
 st.title("☁️ Word Cloud จากความคิดเห็น YouTube (วลี, คำ, คำนาม, คำกริยา)")
 

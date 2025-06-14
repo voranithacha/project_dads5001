@@ -45,7 +45,7 @@ def login_or_register():
                     st.session_state["logged_in"] = True
                     st.session_state["username"] = username
                     st.success("✅ เข้าสู่ระบบสำเร็จ")
-                    st.experimental_rerun()
+                    st.rerun()
                 else:
                     st.error("❌ Username หรือ Password ไม่ถูกต้อง")
 

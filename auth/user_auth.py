@@ -12,13 +12,14 @@ def hash_password(password):
 
 def register_user(username, password):
     users = get_db()
-    st.write("📡 เชื่อมต่อ MongoDB ได้")
+    st.write("📡 เชื่อมต่อ MongoDB สำเร็จ")
     if users.find_one({"username": username}):
         return False
     users.insert_one({
         "username": username,
         "password": hash_password(password)
     })
+    st.success("✅ บันทึกข้อมูลลง MongoDB แล้ว")
     return True
 
 def login_user(username, password):

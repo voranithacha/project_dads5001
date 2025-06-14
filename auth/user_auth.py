@@ -3,12 +3,16 @@ import os
 import hashlib
 import streamlit as st
 
-USER_FILE = "users.json"
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+USER_FILE = os.path.join(BASE_DIR, "users.json")
 
 def load_users():
     if os.path.exists(USER_FILE):
-        with open(USER_FILE, "r") as f:
-            return json.load(f)
+        try:
+            with open(USER_FILE, "r") as f:
+                return json.load(f)
+        except json.JSONDecodeError:
+            return {}  # ถ้าไฟล์ว่างหรือผิด
     return {}
 
 def save_users(users):
@@ -30,7 +34,6 @@ def register_user(username, password):
     save_users(users)
     return True
 
-# ส่วนนี้คือ UI สำหรับ login/register
 def login_or_register():
     if "logged_in" not in st.session_state:
         st.session_state["logged_in"] = False
@@ -38,7 +41,7 @@ def login_or_register():
         st.session_state["username"] = ""
 
     if not st.session_state["logged_in"]:
-        st.title("🔐 เข้าสู่ระบบเพื่อใช้งาน Ask AI")
+        st.title("🔐 กรุณาเข้าสู่ระบบเพื่อใช้งาน Ask AI")
 
         tab1, tab2 = st.tabs(["เข้าสู่ระบบ", "สมัครสมาชิก"])
 

@@ -23,7 +23,7 @@ def run():
         if "comment_text_display" not in df.columns:
             st.error("ไม่พบคอลัมน์ 'comment_text_display' ในไฟล์ CSV นี้")
         else:
-            st.error("ไม่พบคอลัมน์ 'comment_text_display' ในไฟล์ CSV นี้")
+            st.write(df)
             
 
 

@@ -8,3 +8,7 @@ joblib
 wordcloud 
 matplotlib
 pythainlp
+PyThaiNLP
+numpy
+scikit-learn
+python-crfsuite

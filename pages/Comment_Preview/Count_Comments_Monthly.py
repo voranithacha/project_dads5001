@@ -5,7 +5,7 @@ import os
 # === PATH CONFIG ===
 CSV_PATH = './data/youtube_comments_full.csv'
 
-st.subheader("📄 แสดงข้อมูลจากไฟล์ความคิดเห็น YouTube (CSV)")
+st.subheader("📊 จำนวนการแสดงความคิดเห็นในแต่ละเดือน (CSV)")
 
 # === FILE CHECK ===
 if not os.path.exists(CSV_PATH):

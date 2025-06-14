@@ -54,15 +54,15 @@ def run():
     # === CUSTOMIZE LAYOUT ===
     fig.update_layout(
         width=1000,
-        height=600,
+        height=500,
         xaxis=dict(
-            tickangle=90,
+            tickangle=45,
             tickmode='array',
             tickvals=comment_counts['year_month'].unique(),  # แสดงทุกเดือนที่มี
         ),
         legend=dict(
             orientation="h",
-            y=1.1,        # เหนือกราฟ
+            y=1.2,        # เหนือกราฟ
             x=0.5,
             xanchor='center'
         )

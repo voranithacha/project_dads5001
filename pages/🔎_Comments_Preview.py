@@ -13,11 +13,14 @@ sub_page = st.sidebar.radio("", ["จำนวนการ comments เเต่
                                  ])
 # เงื่อนไขการแสดงผลตามหน้าที่เลือก
 if sub_page == "จำนวนการ comments เเต่ละเดือน":
-    from pages.Comment_Preview import Count_Comments_Monthly
+  from pages.Comment_Preview import Count_Comments_Monthly
+  Count_Comments_Monthly()
 elif sub_page == "Word Cloud":
-    from pages.Comment_Preview import Word_Cloud
+  from pages.Comment_Preview import Word_Cloud
+  Word_Cloud()
 elif sub_page == "subpage3":
-    from pages.Comment_Preview import subpage3
+  from pages.Comment_Preview import subpage3
+  subpage3()
 elif sub_page == "subpage4":
     st.write("คุณเลือกหน้า subpage4")
 elif sub_page == "subpage5":

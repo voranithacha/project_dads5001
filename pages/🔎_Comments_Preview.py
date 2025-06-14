@@ -1,7 +1,7 @@
 import streamlit as st
 
 # สร้างเมนูด้านข้าง
-sub_page = st.sidebar.radio("เลือกหน้า Word Cloud", ["Word Cloud", "subpage2", "subpage3", "subpage4", "subpage5"])
+sub_page = st.sidebar.radio("เลือกหัวข้อการ Preview Comments", ["Word Cloud", "subpage2", "subpage3", "subpage4", "subpage5"])
 
 # เงื่อนไขการแสดงผลตามหน้าที่เลือก
 if sub_page == "Word Cloud":

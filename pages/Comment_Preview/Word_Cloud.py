@@ -12,7 +12,7 @@ import os
 CSV_PATH = './data/youtube_comments_full.csv'
 FONT_PATH = './fonts/Sarabun-Regular.ttf'
 
-st.subheader("☁️ Word Cloud จากความคิดเห็นใน YouTube (วลี, คำ, คำนาม, คำกริยา)")
+st.subheader("☁️ Word Cloud จากความคิดเห็นใน YouTube")
 
 # === FILE CHECK ===
 if not os.path.exists(CSV_PATH):

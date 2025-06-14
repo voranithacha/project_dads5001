@@ -1,21 +1,22 @@
-import streamlit as st
-import duckdb
 import pandas as pd
-import plotly.express as px
+import streamlit as st
 import os
 
-st.subheader("📊 จำนวนการแสดงความคิดเห็นในแต่ละเดือน")
+# === PATH CONFIG ===
+CSV_PATH = './data/youtube_comments_full.csv'
 
-# กำหนด path ของไฟล์ CSV
-csv_path = './data/youtube_comments_full.csv'
- 
-# ตรวจสอบว่าไฟล์มีอยู่หรือไม่
-if os.path.exists(csv_path):
-    # โหลดข้อมูลจาก CSV
-    df = pd.read_csv(csv_path)
- 
-    # แสดงตัวอย่างข้อมูล 5 แถวแรก
-    st.dataframe(df.head())
+st.subheader("📄 แสดงข้อมูลจากไฟล์ความคิดเห็น YouTube (CSV)")
+
+# === FILE CHECK ===
+if not os.path.exists(CSV_PATH):
+    st.error(f"❌ ไม่พบไฟล์ที่ {CSV_PATH}")
 else:
-    st.error(f"ไม่พบไฟล์ที่ตำแหน่ง: {csv_path}")
+    df = pd.read_csv(CSV_PATH)
 
+    st.success(f"✅ โหลดข้อมูลสำเร็จ! พบ {len(df)} แถว และ {len(df.columns)} คอลัมน์")
+    
+    # แสดงข้อมูล
+    st.dataframe(df, use_container_width=True)
+
+    # ถ้าต้องการ preview เฉพาะ 10 แถวแรก:
+    # st.dataframe(df.head(10))

@@ -52,7 +52,8 @@ def login_or_register():
         with tab2:
             new_user = st.text_input("ตั้ง Username", key="reg_user")
             new_pass = st.text_input("ตั้ง Password", type="password", key="reg_pass")
-            if st.button("ลงทะเบียน"):
+            if st.button("ลงทะเบียน", key="register_button"):
+                st.write("🚀 ปุ่มลงทะเบียนถูกกดแล้ว")
                 if register_user(new_user, new_pass):
                     st.success("✅ สมัครสมาชิกสำเร็จ! โปรดเข้าสู่ระบบ")
                 else:

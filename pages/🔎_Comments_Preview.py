@@ -15,11 +15,11 @@ if sub_page == "จำนวนการ comments เเต่ละเดือ
     from pages.Comment_Preview import Count_Comments_Monthly
 elif sub_page == "Word Cloud":
     from pages.Comment_Preview import Word_Cloud
-elif sub_page == "subpage2":
-    st.write("คุณเลือกหน้า subpage2")
 elif sub_page == "subpage3":
-    st.write("คุณเลือกหน้า subpage3")
+    from pages.Comment_Preview import subpage3
 elif sub_page == "subpage4":
     st.write("คุณเลือกหน้า subpage4")
 elif sub_page == "subpage5":
     st.write("คุณเลือกหน้า subpage5")
+elif sub_page == "subpage6":
+    st.write("คุณเลือกหน้า subpage6")

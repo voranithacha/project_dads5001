@@ -6,19 +6,17 @@ import duckdb as db
 import re
 import time
 from transformers import AutoTokenizer, AutoModelForSequenceClassification
-from typing import List, Tuple, Dict
 
 st.set_page_config(page_title="แดชบอร์ดวิเคราะห์ความรู้สึก", layout="wide")
 st.title("🔍 แดชบอร์ดวิเคราะห์ความรู้สึกจากความคิดเห็น YouTube")
 
-# ==== โหลดโมเดลด้วย cache เพื่อความเร็ว ====
+# ✅ ย้ายออกมานอกคลาส แล้วใช้ cache
 @st.cache_resource(show_spinner=True)
 def load_model(model_name: str):
     tokenizer = AutoTokenizer.from_pretrained(model_name)
     model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=3)
     return tokenizer, model
 
-# ==== โหลดข้อมูลจาก DuckDB ====
 @st.cache_data
 def load_data(db_path: str, table_name: str) -> pd.DataFrame:
     try:
@@ -31,8 +29,7 @@ def load_data(db_path: str, table_name: str) -> pd.DataFrame:
         st.error(f"❌ ไม่สามารถโหลดข้อมูลจาก DuckDB ได้: {e}")
         return pd.DataFrame()
 
-# ==== วิเคราะห์ความคิดเห็นแบบ Batch ====
-def predict_sentiments(df: pd.DataFrame, tokenizer, model, batch_size: int = 32) -> pd.DataFrame:
+def predict_sentiments(df, tokenizer, model, batch_size: int = 32):
     labels_map = {0: "เชิงลบ", 1: "เป็นกลาง", 2: "เชิงบวก"}
     comments = df["comment"].astype(str).tolist()
 
@@ -51,7 +48,7 @@ def predict_sentiments(df: pd.DataFrame, tokenizer, model, batch_size: int = 32)
             confs = torch.max(probs, dim=1)[0]
         sentiments.extend([labels_map[p.item()] for p in preds])
         confidences.extend([c.item() for c in confs])
-        progress_bar.progress((i + batch_size) / total)
+        progress_bar.progress(min((i + batch_size) / total, 1.0))
         status.text(f"วิเคราะห์ {min(i + batch_size, total)} / {total} ความคิดเห็น")
 
     df["sentiment"] = sentiments
@@ -60,7 +57,6 @@ def predict_sentiments(df: pd.DataFrame, tokenizer, model, batch_size: int = 32)
     status.empty()
     return df
 
-# ==== เริ่มต้นแอป ====
 def main():
     st.sidebar.header("⚙️ การตั้งค่า")
     db_path = st.sidebar.text_input("📁 ที่อยู่ฐานข้อมูล DuckDB", "./comment.duckdb")
@@ -73,28 +69,28 @@ def main():
 
     df = load_data(db_path, table_name)
     if df.empty:
+        st.warning("⚠️ ไม่พบข้อมูลในตารางที่ระบุ")
         st.stop()
 
     st.success(f"✅ โหลดข้อมูลจำนวน {len(df)} ความคิดเห็นเรียบร้อยแล้ว")
 
     if st.button("🚀 เริ่มวิเคราะห์ความคิดเห็น"):
-        with st.spinner("📊 กำลังวิเคราะห์..."):
+        with st.spinner("📊 กำลังโหลดโมเดล..."):
             tokenizer, model = load_model(model_name)
+
+        with st.spinner("🔍 กำลังวิเคราะห์..."):
             start = time.time()
-            df_result = predict_sentiments(df, tokenizer, model, batch_size=batch_size)
+            df_result = predict_sentiments(df, tokenizer, model, batch_size)
             duration = time.time() - start
         st.success(f"✅ วิเคราะห์เสร็จใน {duration:.2f} วินาที")
 
-        # === กราฟ ===
         st.subheader("📈 สรุปผลความรู้สึก")
         fig = px.histogram(df_result, x="sentiment", color="sentiment", barmode="group")
         st.plotly_chart(fig, use_container_width=True)
 
-        # === ตัวอย่างผลลัพธ์ ===
         st.subheader("📝 ตัวอย่างผลลัพธ์")
         st.dataframe(df_result[["comment", "sentiment", "confidence"]].head(20))
 
-        # === ดาวน์โหลดผลลัพธ์ ===
         st.subheader("⬇️ ดาวน์โหลดไฟล์ผลลัพธ์")
         csv = df_result.to_csv(index=False).encode("utf-8")
         st.download_button("📄 ดาวน์โหลด CSV", csv, file_name="sentiment_results.csv", mime="text/csv")

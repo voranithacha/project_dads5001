@@ -1,4 +1,5 @@
 import streamlit as st
+import duckdb as db
 
 # เพิ่มหัวข้อขนาดใหญ่ใน sidebar ก่อน radio
 st.sidebar.markdown("<h3 style='font-size:20px;'>📌 เลือกหัวข้อการ Preview Comments</h3>", unsafe_allow_html=True)

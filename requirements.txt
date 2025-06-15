@@ -20,4 +20,3 @@ tensorflow
 transformers
 sentencepiece
 torch==1.13.1
-tf-keras

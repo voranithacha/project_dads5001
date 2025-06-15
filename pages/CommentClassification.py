@@ -58,17 +58,17 @@ def load_all_models():
     """Load all models and return them"""
     try:
         # Load Random Forest models
-        rf_model = joblib.load('pages/final_model_rf.pkl')
-        rf_vectorizer = joblib.load('pages/vectorizer_rf.pkl')
-        rf_encoder = joblib.load('pages/label_encoder_rf.pkl')
-        rf_selector = joblib.load('pages/selector_rf.pkl')
+        rf_model = joblib.load('pages/Model/final_model_rf.pkl')
+        rf_vectorizer = joblib.load('pages/Model/vectorizer_rf.pkl')
+        rf_encoder = joblib.load('pages/Model/label_encoder_rf.pkl')
+        rf_selector = joblib.load('pages/Model/selector_rf.pkl')
         rf_vectorizer.tokenizer = thai_tokenizer
         
         # Load Neural Network models
-        nn_model = load_model('pages/final_model_NN.keras')
-        nn_vectorizer = joblib.load('pages/vectorizer_NN.pkl')
-        nn_encoder = joblib.load('pages/label_encoder_NN.pkl')
-        nn_selector = joblib.load('pages/selector_NN.pkl')
+        nn_model = load_model('pages/Model/final_model_NN.keras')
+        nn_vectorizer = joblib.load('pages//Model/vectorizer_NN.pkl')
+        nn_encoder = joblib.load('pages/Model/label_encoder_NN.pkl')
+        nn_selector = joblib.load('pages/Model/selector_NN.pkl')
         nn_vectorizer.tokenizer = thai_tokenizer
         
         return {
@@ -132,7 +132,7 @@ with col1:
         with st.spinner("กำลังโหลดโมเดลและประมวลผล..."):
             try:
                 # Load data
-                df = pd.read_csv('pages/predict_data.csv')
+                df = pd.read_csv('pages/Model/predict_data.csv')
                 
                 # Load models
                 models = load_all_models()

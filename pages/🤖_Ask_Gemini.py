@@ -127,7 +127,6 @@ if data_source == "📁 Default CSV (ระบบ)":
         df_dict = df.to_dict(orient='records')
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการโหลดไฟล์: {e}")
-'------------
 elif data_source == "📤 Upload CSV File จากเครื่อง":
     col1, col2 = st.columns([2, 2])
 
@@ -147,7 +146,6 @@ elif data_source == "📤 Upload CSV File จากเครื่อง":
             df = get_all_comments(video_ids, YOUTUBE_API_KEY)
             st.success("📥 ดึงข้อมูลความคิดเห็นจาก YouTube สำเร็จแล้ว!")
             df_dict = df.to_dict(orient="records")
-'------------
 
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
 if df_dict:

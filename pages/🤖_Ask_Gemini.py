@@ -156,16 +156,6 @@ if df_dict:
 
     # === Export Options ===
     st.markdown("### 📤 Export Options")
-
-    # JSON
-    json_data = json.dumps(df_dict, ensure_ascii=False, indent=2)
-    st.download_button(
-        label="⬇️ Download JSON",
-        data=json_data,
-        file_name="comments_data.json",
-        mime="application/json"
-    )
-
     # CSV
     csv_data = pd.DataFrame(df_dict).to_csv(index=False)
     st.download_button(
@@ -175,12 +165,4 @@ if df_dict:
         mime="text/csv"
     )
 
-    # Excel
-    excel_buffer = io.BytesIO()
-    pd.DataFrame(df_dict).to_excel(excel_buffer, index=False, engine='xlsxwriter')
-    st.download_button(
-        label="⬇️ Download Excel",
-        data=excel_buffer,
-        file_name="comments_data.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    )
+ 

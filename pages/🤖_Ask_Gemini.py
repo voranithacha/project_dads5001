@@ -141,10 +141,6 @@ elif data_source == "📤 Upload CSV File จากเครื่อง":
 
     with col2:
         if st.button("🔄 Download Latest YouTube Comments"):
-            video_ids = ["OMV9F9zB4KU", "87lJCDADWCo", "CbkX7H-0BIU"]  # ใช้ video ids เดิมของคุณ
-            df = get_all_comments(video_ids, YOUTUBE_API_KEY)
-            st.success("📥 ดึงข้อมูลความคิดเห็นจาก YouTube สำเร็จแล้ว!")
-            df_dict = df.to_dict(orient="records")
 
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
 if df_dict:

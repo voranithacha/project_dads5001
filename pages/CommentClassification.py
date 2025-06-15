@@ -13,7 +13,7 @@ if option == "🔍 Preview Comments":
     st.write("แสดงคอมเมนต์ top 5 ที่เกี่ยวกับแต่ละหมวด")
 
     con = db.connect('./comment.duckdb')
-    con.execute("CREATE OR REPLACE TABLE yt_comment_full AS SELECT * FROM read_csv_auto('./data/youtube_comments_full.csv')")
+    #con.execute("CREATE OR REPLACE TABLE yt_comment_full AS SELECT * FROM read_csv_auto('./data/youtube_comments_full.csv')")
 
     # comment Top5 (liked)
     st.write("Top 5 comments with Most Liked")

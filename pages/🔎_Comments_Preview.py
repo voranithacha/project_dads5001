@@ -94,6 +94,7 @@ elif sub_page == "ตัวอย่าง Comments ในแต่ละหม�
   FROM comment_data 
   WHERE video_id = '{selected_video_id}'
   and (comment like '%สวย%' or comment like '%สี%' or comment like '%ข้างใน%' or comment like '%หน้า%' or comment like '%ดีไซน์%')
+  and comment not like '%เสียง%'
   limit 5; """).fetchdf()
   st.write(design)
 

@@ -137,7 +137,10 @@ elif data_source == "📤 Upload CSV File จากเครื่อง":
             #st.write(df)
             df_dict = df.to_dict(orient='records')
 elif data_source == "🔄 Download and Use Latest YouTube Comments":
-            
+    st.success("✅ Downloadและอ่านไฟล์ CSV สำเร็จ")
+
+
+    
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
 if df_dict:
     st.subheader("🧠 Ask Questions about the Data")

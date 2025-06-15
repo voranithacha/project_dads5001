@@ -1,7 +1,7 @@
 import requests
 import pandas as pd
 
-def get_video_title0(video_id, api_key):
+def get_video_title(video_id, api_key):
     url = "https://www.googleapis.com/youtube/v3/videos"
     params = {
         "part": "snippet",
@@ -14,8 +14,8 @@ def get_video_title0(video_id, api_key):
         return items[0]["snippet"]["title"]
     return "Unknown Title"
 
-def get_all_comments0(video_ids, api_key):
-    def fetch_comments0(video_id, video_title):
+def get_all_comments(video_ids, api_key):
+    def fetch_comments(video_id, video_title):
         comments = []
         url = "https://www.googleapis.com/youtube/v3/commentThreads"
         params = {
@@ -62,8 +62,8 @@ def get_all_comments0(video_ids, api_key):
 
     all_comments = []
     for vid in video_ids:
-        title = get_video_title0(vid, api_key)
-        all_comments.extend(fetch_comments0(vid, title))
+        title = get_video_title(vid, api_key)
+        all_comments.extend(fetch_comments(vid, title))
 
     df = pd.DataFrame(all_comments)
     df.to_csv("youtube_comments.csv", index=False)

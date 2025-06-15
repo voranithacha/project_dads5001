@@ -13,14 +13,16 @@ sub_page = st.sidebar.radio("", ["จำนวนการ comments เเต่
 # เงื่อนไขการแสดงผลตามหน้าที่เลือก
 if sub_page == "จำนวนการ comments เเต่ละเดือน":
   from pages.Comment_Preview import Count_Comments_Monthly
+  Count_Comments_Monthly.run()
   st.markdown("### จำนวน Comments ในแต่ละเดือน")
   con = db.connect('./comment.duckdb')
   top_like = con.execute("SELECT strftime('%Y-%m', CAST(published_at AS TIMESTAMP)) as year_month , count(1) as total_comment FROM yt_comment_full group by year_month order by year_month asc;")
   st.write(top_like)
-  Count_Comments_Monthly.run()
+  
 elif sub_page == "Word Cloud":
   from pages.Comment_Preview import Word_Cloud
   Word_Cloud.run()
+  
 elif sub_page == "Top5 Comments":
   st.markdown("### Top5 Comments ที่มีจำนวนการ Like เยอะที่สุด")
   con = db.connect('./comment.duckdb')

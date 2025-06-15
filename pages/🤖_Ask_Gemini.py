@@ -127,7 +127,6 @@ if data_source == "📁 Default CSV (ระบบ)":
         df_dict = df.to_dict(orient='records')
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการโหลดไฟล์: {e}")
-'-----------------
 elif data_source == "📤 Upload CSV File จากเครื่อง":
     uf_csv = st.file_uploader("📂 Upload CSV File", type=["csv"])
     if uf_csv is not None:
@@ -137,10 +136,8 @@ elif data_source == "📤 Upload CSV File จากเครื่อง":
             st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
             #st.write(df)
             df_dict = df.to_dict(orient='records')
-
-elif data_source == "🔄 Download and Use Latest YouTube Comments"
+elif data_source == "🔄 Download and Use Latest YouTube Comments":
             
-'----------------------
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
 if df_dict:
     st.subheader("🧠 Ask Questions about the Data")

@@ -54,6 +54,7 @@ elif sub_page == "ตัวอย่าง Comments ในแต่ละหม�
   st.markdown("---")
 
   st.markdown("### หมวด ราคา 🏷️")
+  con = db.connect('comment.duckdb')
   price = con.execute(f"""
   SELECT distinct comment                    
   FROM comment_data 

@@ -3,7 +3,7 @@ import pandas as pd
 import io
 import json
 from google import genai
-
+from comment_fetcher import get_all_comments
 from auth.user_auth import login_or_register  # เรียกระบบล๊อกอิน
 
 # === ตรวจสิทธิ์ก่อนเข้าถึง ===
@@ -141,7 +141,6 @@ elif data_source == "📤 Upload CSV File จากเครื่อง":
 
     with col2:
         if st.button("🔄 Download Latest YouTube Comments"):
-            from comment_fetcher import get_all_comments
             video_ids = ["OMV9F9zB4KU", "87lJCDADWCo", "CbkX7H-0BIU"]  # ใช้ video ids เดิมของคุณ
             df = get_all_comments(video_ids, YOUTUBE_API_KEY)
             st.success("📥 ดึงข้อมูลความคิดเห็นจาก YouTube สำเร็จแล้ว!")

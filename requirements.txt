@@ -9,6 +9,11 @@ wordcloud
 matplotlib
 pythainlp
 PyThaiNLP
-numpy
-scikit-learn
+numpy<2.0
+scikit-learn==1.6.1
 python-crfsuite
+seaborn
+pillow
+requests
+dill
+tensorflow

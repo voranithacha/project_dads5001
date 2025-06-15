@@ -80,7 +80,7 @@ def format_dict_as_text(data_list):
     return "\n\n".join(formatted_rows)
 
 def ask_gemini_about_data(client, model, df_dict, question):
-    context_text = format_dict_as_text(df_dict[:50])  # จำกัดข้อมูล 50 records เพื่อความเร็ว
+    context_text = format_dict_as_text(df_dict)  # ใช้ทุกแถวใน df_dict
     prompt = (
         "You are a data analyst. Here's a sample of the data:\n\n"
         f"{context_text}\n\n"

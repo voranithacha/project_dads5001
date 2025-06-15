@@ -15,13 +15,9 @@ st.title("🔍 แดชบอร์ดวิเคราะห์ความ�
 # === โหลดโมเดลแบบแคช (อยู่นอกคลาสเท่านั้น) ===
 @st.cache_resource(show_spinner=True)
 def load_model(model_name: str):
-    try:
-        tokenizer = AutoTokenizer.from_pretrained(model_name)
-        model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=3)
-        return tokenizer, model
-    except Exception as e:
-        st.error(f"ข้อผิดพลาดในการโหลดโมเดล: {str(e)}")
-        return None, None
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModelForSequenceClassification.from_pretrained(model_name, num_labels=3)
+    return tokenizer, model
 
 # === ตัววิเคราะห์ความรู้สึกแบบ Batch ===
 class BatchSentimentAnalyzer:

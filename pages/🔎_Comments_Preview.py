@@ -9,6 +9,7 @@ sub_page = st.sidebar.radio("", ["จำนวนการ comments เเต่
                                  "Top5 Comments ที่มีจำนวนการ Reply เยอะที่สุด", 
                                  "Top5 Users ที่มีจำนวนการ Comments เยอะที่สุด",
                                  "Top5 Comments ที่มีความยาวมากที่สุด",
+                                 "จำนวน Comments ในแต่ละเดือน"
                                  ])
 # เงื่อนไขการแสดงผลตามหน้าที่เลือก
 if sub_page == "จำนวนการ comments เเต่ละเดือน":
@@ -17,11 +18,22 @@ if sub_page == "จำนวนการ comments เเต่ละเดือ
 elif sub_page == "Word Cloud":
   from pages.Comment_Preview import Word_Cloud
   Word_Cloud.run()
-elif sub_page == "subpage3":
-  st.write("คุณเลือกหน้า subpage3")
-elif sub_page == "subpage4":
-  st.write("คุณเลือกหน้า subpage4")
-elif sub_page == "subpage5":
-  st.write("คุณเลือกหน้า subpage5")
-elif sub_page == "subpage6":
-  st.write("คุณเลือกหน้า subpage6")
+elif sub_page == "Top5 Comments ที่มีจำนวนการ Like เยอะที่สุด":
+  con = db.connect('./comment.duckdb')
+  top_like = con.execute("SELECT comment_text_original as comment, like_count FROM yt_comment_full order by like_count desc limit 5;")
+  st.write(top_like)
+elif sub_page == "Top5 Comments ที่มีจำนวนการ Reply เยอะที่สุด":
+  con = db.connect('./comment.duckdb')
+  top_reply = con.execute("SELECT comment_text_original as comment, reply_count FROM yt_comment_full order by reply_count desc limit 5;")
+  st.write(top_reply)
+elif sub_page == "Top5 Users ที่มีจำนวนการ Comments เยอะที่สุด":
+  con = db.connect('./comment.duckdb')
+  top_like = con.execute("SELECT author_display_name, count(1) as total_comment FROM yt_comment_full group by author_display_name order by count(1) desc limit 5;")
+  st.write(top_like)
+elif sub_page == "Top5 Comments ที่มีความยาวมากที่สุด":
+  con = db.connect('./comment.duckdb')
+  top_like = con.execute("SELECT comment_text_original as comment, length(comment_text_original) as length_comment FROM yt_comment_full order by length(comment_text_original) desc limit 5;")
+  st.write(top_like)
+elif sub_page == "จำนวน Comments ในแต่ละเดือน":
+  top_like = con.execute("SELECT strftime('%Y-%m', CAST(published_at AS TIMESTAMP)) as year_month , count(1) as total_comment FROM yt_comment_full group by year_month order by year_month asc;")
+  st.write(top_like)

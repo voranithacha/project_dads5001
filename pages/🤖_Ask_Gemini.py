@@ -127,16 +127,27 @@ if data_source == "📁 Default CSV (ระบบ)":
         df_dict = df.to_dict(orient='records')
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการโหลดไฟล์: {e}")
-
+'------------
 elif data_source == "📤 Upload CSV File จากเครื่อง":
-    uf_csv = st.file_uploader("📂 Upload CSV File", type=["csv"])
-    if uf_csv is not None:
-        bytes_data = uf_csv.getvalue()
-        df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
-        if df is not None:
-            st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
-            #st.write(df)
-            df_dict = df.to_dict(orient='records')
+    col1, col2 = st.columns([2, 2])
+
+    with col1:
+        uf_csv = st.file_uploader("📂 Upload CSV File", type=["csv"])
+        if uf_csv is not None:
+            bytes_data = uf_csv.getvalue()
+            df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
+            if df is not None:
+                st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
+                df_dict = df.to_dict(orient='records')
+
+    with col2:
+        if st.button("🔄 Download Latest YouTube Comments"):
+            from comment_fetcher import get_all_comments
+            video_ids = ["OMV9F9zB4KU", "87lJCDADWCo", "CbkX7H-0BIU"]  # ใช้ video ids เดิมของคุณ
+            df = get_all_comments(video_ids, YOUTUBE_API_KEY)
+            st.success("📥 ดึงข้อมูลความคิดเห็นจาก YouTube สำเร็จแล้ว!")
+            df_dict = df.to_dict(orient="records")
+'------------
 
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
 if df_dict:
@@ -154,15 +165,5 @@ if df_dict:
             "answer": answer
         })
 
-    # === Export Options ===
-    st.markdown("### 📤 Export Options")
-    # CSV
-    csv_data = pd.DataFrame(df_dict).to_csv(index=False)
-    st.download_button(
-        label="⬇️ Download CSV",
-        data=csv_data,
-        file_name="comments_data.csv",
-        mime="text/csv"
-    )
 
  

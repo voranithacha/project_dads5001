@@ -21,7 +21,7 @@ Applying machine learning techniques to text classification. Its primary objecti
 """### 🔍 Data Source and Collection
 Text Comments: Extracted from the comment sections of YouTube car review videos.  
 Target Brand: BYD, with a focus on its three best-selling models in the Thai market — Atto 3, Seal, and Dolphin.  
-YouTube Channel: Data was collected from the official *autolifethailand* channel, a trusted automotive source with over 1.06 million subscribers. 
+YouTube Channel: Data was collected from the official *autolifethailand* channel, a trusted automotive source with over 1.12 million subscribers. 
 Comments were gathered from three BYD-related review videos, which form the basis for training and evaluating the classification model.
 """
 """### 💡 AI-Powered Insight Assistant

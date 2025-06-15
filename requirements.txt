@@ -19,4 +19,4 @@ dill
 tensorflow
 transformers
 sentencepiece
-torch>=2.0.0
+torch==1.13.1

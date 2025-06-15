@@ -9,7 +9,6 @@ sub_page = st.sidebar.radio("", ["จำนวนการ comments เเต่
                                  "Top5 Comments", 
                                  "จำนวน Comments ในแต่ละเดือน",
                                  "ตัวอย่าง Comments ในแต่ละหมวด",
-                                 "ตัวอย่าง new"
                                 
                                  ])
 # เงื่อนไขการแสดงผลตามหน้าที่เลือก

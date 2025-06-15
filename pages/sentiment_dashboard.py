@@ -7,13 +7,16 @@ import plotly.express as px
 st.title("🔍 Sentiment Analysis Dashboard (YouTube Comments)")
 
 # === STEP 1: Upload CSV ===
-uploaded_file = st.file_uploader("📁 Upload a CSV file with comments", type="csv")
+import duckdb as db
+con = db.connect('./comment.duckdb')
+df = con.execute("SELECT comment_text_original as comment FROM yt_comment_full;")
+#uploaded_file = st.file_uploader("📁 Upload a CSV file with comments", type="csv")
 
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    if "comment_text_display" not in df.columns:
-        st.error("❌ Column 'comment_text_display' not found in uploaded file.")
-        st.stop()
+#if uploaded_file:
+#    df = pd.read_csv(uploaded_file)
+#    if "comment_text_display" not in df.columns:
+#        st.error("❌ Column 'comment_text_display' not found in uploaded file.")
+#        st.stop()
 
     # === STEP 2: Load model ===
     @st.cache_resource(show_spinner=True)

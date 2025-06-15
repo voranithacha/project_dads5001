@@ -122,7 +122,7 @@ df_dict = None
 if data_source == "📁 Default CSV (ระบบ)":
     try:
         df = pd.read_csv(CSV_PATH)
-        st.success(f"โหลดข้อมูลจาก `{CSV_PATH}` สำเร็จ!")
+        st.success(f"โหลดข้อมูลจาก Default CSV (ระบบ) สำเร็จ!")
         #st.write(df)
         df_dict = df.to_dict(orient='records')
     except Exception as e:

@@ -36,5 +36,6 @@ elif sub_page == "Top5 Comments ที่มีความยาวมากท
   top_like = con.execute("SELECT comment_text_original as comment, length(comment_text_original) as length_comment FROM yt_comment_full order by length(comment_text_original) desc limit 5;")
   st.write(top_like)
 elif sub_page == "จำนวน Comments ในแต่ละเดือน":
+  con = db.connect('./comment.duckdb')
   top_like = con.execute("SELECT strftime('%Y-%m', CAST(published_at AS TIMESTAMP)) as year_month , count(1) as total_comment FROM yt_comment_full group by year_month order by year_month asc;")
   st.write(top_like)

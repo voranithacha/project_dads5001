@@ -123,7 +123,7 @@ if data_source == "📁 Default CSV (ระบบ)":
     try:
         df = pd.read_csv(CSV_PATH)
         st.success(f"โหลดข้อมูลจาก `{CSV_PATH}` สำเร็จ!")
-        st.write(df)
+        #st.write(df)
         df_dict = df.to_dict(orient='records')
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการโหลดไฟล์: {e}")
@@ -135,7 +135,7 @@ elif data_source == "📤 Upload CSV File จากเครื่อง":
         df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
         if df is not None:
             st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
-            st.write(df)
+            #st.write(df)
             df_dict = df.to_dict(orient='records')
 
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===

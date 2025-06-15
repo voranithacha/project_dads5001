@@ -17,3 +17,5 @@ pillow
 requests
 dill
 tensorflow
+transformers
+sentencepiece

@@ -59,13 +59,23 @@ def load_analyzer(model_name: str, batch_size: int = 32):
 
 @st.cache_data
 def load_data(db_path: str, table: str) -> pd.DataFrame:
+    if not os.path.exists(db_path):
+        st.error(f"❌ ไม่พบไฟล์ฐานข้อมูล: {db_path}")
+        return pd.DataFrame()
+    
     try:
         con = db.connect(db_path)
+        # Check if table exists
+        tables = con.execute("SHOW TABLES").fetchdf()
+        if table not in tables['name'].values:
+            st.error(f"❌ ไม่พบตาราง '{table}' ในฐานข้อมูล")
+            return pd.DataFrame()
+            
         df = con.execute(f"SELECT comment_text_original AS comment FROM {table} LIMIT 1000;").fetchdf()
         con.close()
         return df
     except Exception as e:
-        st.error(f"❌ ไม่สามารถโหลดข้อมูลได้: {e}")
+        st.error(f"❌ เกิดข้อผิดพลาด: {str(e)}")
         return pd.DataFrame()
 
 def main():

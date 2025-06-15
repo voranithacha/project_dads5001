@@ -113,7 +113,7 @@ st.subheader("📊 เลือกแหล่งข้อมูลความ�
 
 data_source = st.radio(
     "เลือกแหล่งข้อมูล CSV",
-    ["📁 Default CSV (ระบบ)", "📤 Upload CSV File จากเครื่อง"]
+    ["📁 Default CSV (ระบบ)", "📤 Upload CSV File จากเครื่อง","🔄 Download and Use Latest YouTube Comments"]
 )
 
 df = None
@@ -127,21 +127,20 @@ if data_source == "📁 Default CSV (ระบบ)":
         df_dict = df.to_dict(orient='records')
     except Exception as e:
         st.error(f"เกิดข้อผิดพลาดในการโหลดไฟล์: {e}")
+'-----------------
 elif data_source == "📤 Upload CSV File จากเครื่อง":
-    col1, col2 = st.columns([2, 2])
+    uf_csv = st.file_uploader("📂 Upload CSV File", type=["csv"])
+    if uf_csv is not None:
+        bytes_data = uf_csv.getvalue()
+        df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
+        if df is not None:
+            st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
+            #st.write(df)
+            df_dict = df.to_dict(orient='records')
 
-    with col1:
-        uf_csv = st.file_uploader("📂 Upload CSV File", type=["csv"])
-        if uf_csv is not None:
-            bytes_data = uf_csv.getvalue()
-            df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
-            if df is not None:
-                st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
-                df_dict = df.to_dict(orient='records')
-
-    with col2:
-        if st.button("🔄 Download Latest YouTube Comments"):
-
+elif data_source == "🔄 Download and Use Latest YouTube Comments"
+            
+'----------------------
 # === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
 if df_dict:
     st.subheader("🧠 Ask Questions about the Data")

@@ -19,9 +19,6 @@ if sub_page == "จำนวนการ comments เเต่ละเดือ
 elif sub_page == "Word Cloud":
   from pages.Comment_Preview import Word_Cloud
   Word_Cloud.run()
-elif sub_page == "ตัวอย่าง new":
-  from pages.Comment_Preview import New_test
-  New_test.run()
 elif sub_page == "Top5 Comments":
   st.markdown("### Top5 Comments ที่มีจำนวนการ Like เยอะที่สุด")
   con = db.connect('./comment.duckdb')

@@ -4,7 +4,9 @@ import io
 import json
 from google import genai
 
-from auth.user_auth import login_or_register  # เรียกระบบล๊อกอิน
+#-------
+
+from auth.user_auth import login_or_register #เรียกระบบล๊อกอิน
 
 # === ตรวจสิทธิ์ก่อนเข้าถึง ===
 login_or_register()
@@ -52,13 +54,12 @@ if st.button("ออกจากระบบ"):
     st.session_state["username"] = ""
     st.experimental_rerun()
 
-# === ตัวแปร และ Key ===
-CSV_PATH = './data/youtube_comments_full.csv'
-YOUTUBE_API_KEY = st.secrets["YOUTUBE_API_KEY"]
-GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
-client = genai.Client(api_key=GEMINI_API_KEY)
+# 👇 ส่วนนี้ใส่ฟีเจอร์ Chatbot ของคุณได้เลย
+# st.write("ที่นี่คือส่วนของ chatbot หรือฟังก์ชัน AI อื่น ๆ")
 
-# === ฟังก์ชันช่วย ===
+#----------------
+
+# Function to convert uploaded CSV bytes into a DataFrame
 def convert_bytes_to_dataframe(byte_data, encoding='utf-8', **kwargs):
     try:
         string_data = byte_data.decode(encoding)
@@ -75,24 +76,19 @@ def convert_bytes_to_dataframe(byte_data, encoding='utf-8', **kwargs):
         st.error(f"An error occurred: {e}")
         return None
 
-def format_dict_as_text(data_list):
-    formatted_rows = ["\n".join([f"{k}: {v}" for k, v in row.items()]) for row in data_list]
-    return "\n\n".join(formatted_rows)
+# Load API keys from Streamlit secrets
+YOUTUBE_API_KEY = st.secrets["YOUTUBE_API_KEY"]
+GEMINI_API_KEY = st.secrets["GEMINI_API_KEY"]
 
-def ask_gemini_about_data(client, model, df_dict, question):
-    context_text = format_dict_as_text(df_dict[:50])  # จำกัดข้อมูล 50 records เพื่อความเร็ว
-    prompt = (
-        "You are a data analyst. Here's a sample of the data:\n\n"
-        f"{context_text}\n\n"
-        f"Now answer this question based on the data:\n{question}"
-    )
-    response = client.models.generate_content(
-        model=model,
-        contents=prompt
-    )
-    return response.text
 
-# === Sidebar History ===
+# YouTube video IDs
+video_ids = ["OMV9F9zB4KU", "87lJCDADWCo", "CbkX7H-0BIU"]
+
+# Page Header
+st.header("🤖 Analysis of BYD YouTube Comment Using Gemini-2.0-Flash")
+
+
+# Sidebar for conversation history
 with st.sidebar:
     st.subheader("📜 Conversations History")
     if "qa_history" not in st.session_state:
@@ -108,56 +104,67 @@ with st.sidebar:
     else:
         st.info("No Conversations History")
 
-# === เลือกแหล่งข้อมูล ===
-st.subheader("📊 เลือกแหล่งข้อมูลความคิดเห็น")
-
-data_source = st.radio(
-    "เลือกแหล่งข้อมูล CSV",
-    ["📁 Default CSV (ระบบ)", "📤 Upload CSV File จากเครื่อง"]
-)
-
-df = None
+# File Uploader
+uf_csv = st.file_uploader("📁 Upload CSV File")
 df_dict = None
-
-if data_source == "📁 Default CSV (ระบบ)":
-    try:
-        df = pd.read_csv(CSV_PATH)
-        st.success(f"โหลดข้อมูลจาก `{CSV_PATH}` สำเร็จ!")
+if uf_csv is not None:
+    bytes_data = uf_csv.getvalue()
+    df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
+    if df is not None:
         st.write(df)
         df_dict = df.to_dict(orient='records')
-    except Exception as e:
-        st.error(f"เกิดข้อผิดพลาดในการโหลดไฟล์: {e}")
 
-elif data_source == "📤 Upload CSV File จากเครื่อง":
-    uf_csv = st.file_uploader("📂 Upload CSV File", type=["csv"])
-    if uf_csv is not None:
-        bytes_data = uf_csv.getvalue()
-        df = convert_bytes_to_dataframe(bytes_data, delimiter=',')
-        if df is not None:
-            st.success("✅ อัปโหลดและอ่านไฟล์ CSV สำเร็จ")
-            st.write(df)
-            df_dict = df.to_dict(orient='records')
+# Data source selection
+option = st.radio("เลือกแหล่งข้อมูลความคิดเห็น", [
+    "📁 Access Stored Data (Jun 04, 2025)",
+])
 
-# === ถ้ามีข้อมูล ให้ถาม Gemini ได้ ===
+# --- Use selected data source ---
+if option == "📁 Access Stored Data (Jun 04, 2025)":
+    if df_dict:
+        st.write(df_dict)
+
+        
+client = genai.Client(api_key=GEMINI_API_KEY)
+
+def format_dict_as_text(data_list):
+    formatted_rows = ["\n".join([f"{k}: {v}" for k, v in row.items()]) for row in data_list]
+    return "\n\n".join(formatted_rows)
+
+def ask_gemini_about_data(client, model, df_dict, question):
+    context_text = format_dict_as_text(df_dict)
+    prompt = (
+        "You are a data analyst. Here's a sample of the data:\n\n"
+        f"{context_text}\n\n"
+        f"Now answer this question based on the data:\n{question}"
+    )
+    response = client.models.generate_content(
+        model=model,
+        contents=prompt
+    )
+    return response.text
+
+st.subheader("🧠 Ask Questions about the Data")
+
+user_question = st.text_input("Enter your question:❓")
+if st.button("Ask Gemini") and user_question and df_dict:
+    answer = ask_gemini_about_data(client, "gemini-2.0-flash", df_dict, user_question)
+    st.write("📌 **Answer:**")
+    st.success(answer)
+    
+    # Save to history
+    st.session_state.qa_history.append({
+        "question": user_question,
+        "answer": answer
+    })
+
+
+    import json
+
 if df_dict:
-    st.subheader("🧠 Ask Questions about the Data")
-
-    user_question = st.text_input("Enter your question:❓")
-    if st.button("Ask Gemini") and user_question:
-        answer = ask_gemini_about_data(client, "gemini-2.0-flash", df_dict, user_question)
-        st.write("📌 **Answer:**")
-        st.success(answer)
-
-        # Save to history
-        st.session_state.qa_history.append({
-            "question": user_question,
-            "answer": answer
-        })
-
-    # === Export Options ===
     st.markdown("### 📤 Export Options")
 
-    # JSON
+    # Export as JSON
     json_data = json.dumps(df_dict, ensure_ascii=False, indent=2)
     st.download_button(
         label="⬇️ Download JSON",
@@ -166,7 +173,7 @@ if df_dict:
         mime="application/json"
     )
 
-    # CSV
+    # Export as CSV
     csv_data = pd.DataFrame(df_dict).to_csv(index=False)
     st.download_button(
         label="⬇️ Download CSV",
@@ -175,7 +182,7 @@ if df_dict:
         mime="text/csv"
     )
 
-    # Excel
+    # Export as Excel
     excel_buffer = io.BytesIO()
     pd.DataFrame(df_dict).to_excel(excel_buffer, index=False, engine='xlsxwriter')
     st.download_button(
